@@ -1,0 +1,25 @@
+@import '~antd/lib/style/themes/default.less';
+@import '../../utils/utils.less';
+
+.content {
+  position: relative;
+  top: 4px;
+  margin-left: 24px;
+  flex: 1 1 auto;
+  color: @text-color-secondary;
+  line-height: 22px;
+  .contentTitle {
+    font-size: 14px;
+    line-height: 28px;
+    color: @heading-color;
+    margin-bottom: 12px;
+  }
+}
+
+@media screen and (max-width: @screen-xs) {
+  .projectList {
+    .projectGrid {
+      width: 100%;
+    }
+  }
+}
