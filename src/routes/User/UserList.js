@@ -8,11 +8,6 @@ import RoleSelectTree from '../../components/Role/RoleSelectTree';
 import styles from '../TableList.less';
 
 const FormItem = Form.Item;
-const { Option } = Select;
-const getValue = obj =>
-  Object.keys(obj)
-    .map(key => obj[key])
-    .join(',');
 const statusMap = ['default', 'success'];
 const status = ['不可用', '可用'];
 

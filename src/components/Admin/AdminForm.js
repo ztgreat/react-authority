@@ -1,28 +1,7 @@
-import React, {PureComponent, StatelessComponent, Fragment} from 'react';
-import {connect} from 'dva';
-import {
-  Row,
-  Col,
-  Form,
-  Input,
-  Select,
-  Icon,
-  Button,
-  Dropdown,
-  Menu,
-  InputNumber,
-  DatePicker,
-  Modal,
-  Switch,
-  message,
-  Popconfirm,
-  TreeSelect,
-  Badge,
-  Divider,
-} from 'antd';
+import React from 'react';
+import {Form, Input, Modal, Select, Switch,} from 'antd';
 
 const FormItem = Form.Item;
-const {Option} = Select;
 
 @Form.create()
 export default class AdminForm extends React.PureComponent {

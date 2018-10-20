@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import { connect } from 'dva';
-import { Link } from 'dva/router';
-import { Checkbox, Alert, Icon } from 'antd';
+import React, {Component} from 'react';
+import {connect} from 'dva';
+import {Link} from 'dva/router';
+import {Alert, Checkbox} from 'antd';
 import Login from '../../components/Login';
 import styles from './Login.less';
 
-const {  UserName, Password, Captcha, Submit } = Login;
+const {  UserName, Password, Submit } = Login;
 
 @connect(({ login, loading }) => ({
   login,

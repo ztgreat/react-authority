@@ -1,21 +1,6 @@
-import React, {PureComponent, Fragment} from 'react';
+import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'dva';
-import {
-  Row,
-  Col,
-  Card,
-  Form,
-  Input,
-  Select,
-  Icon,
-  Button,
-  Dropdown,
-  Menu,
-  Modal,
-  message,
-  Badge,
-  Divider,
-} from 'antd';
+import {Badge, Button, Card, Divider, Form, Modal, Select,} from 'antd';
 import StandardTable from '../../components/StandardTable';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import RoleForm from '../../components/Role/RoleForm';
@@ -23,12 +8,6 @@ import MenuTree from '../../components/Menu/MenuTree';
 import PermissionTree from '../../components/Permission/PermissionTree';
 import styles from '../TableList.less';
 
-const FormItem = Form.Item;
-const {Option} = Select;
-const getValue = obj =>
-  Object.keys(obj)
-    .map(key => obj[key])
-    .join(',');
 const statusMap = ['default', 'success'];
 const status = ['不可用', '可用'];
 

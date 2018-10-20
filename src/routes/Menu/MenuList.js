@@ -1,39 +1,12 @@
-import React, {PureComponent, Fragment} from 'react';
+import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'dva';
-import moment from 'moment';
-import {
-  Row,
-  Col,
-  Card,
-  Form,
-  Input,
-  Select,
-  Icon,
-  Button,
-  Dropdown,
-  Menu,
-  InputNumber,
-  DatePicker,
-  Modal,
-  Switch,
-  message,
-  Popconfirm,
-  TreeSelect,
-  Badge,
-  Divider,
-} from 'antd';
+import {Badge, Button, Card, Divider, Form, message, Modal, Select,} from 'antd';
 import StandardTable from '../../components/StandardTable';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import MenuForm from '../../components/Menu/MenuForm';
 
 import styles from '../TableList.less';
 
-const FormItem = Form.Item;
-const {Option} = Select;
-const getValue = obj =>
-  Object.keys(obj)
-    .map(key => obj[key])
-    .join(',');
 const statusMap = ['default', 'success'];
 const status = ['不可用', '可用'];
 

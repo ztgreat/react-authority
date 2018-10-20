@@ -7,12 +7,6 @@ import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import styles from '../TableList.less';
 import PermissionForm from "../../components/Permission/PermissionForm";
 
-const FormItem = Form.Item;
-const {Option} = Select;
-const getValue = obj =>
-  Object.keys(obj)
-    .map(key => obj[key])
-    .join(',');
 const statusMap = ['default', 'success'];
 const status = ['不可用', '可用'];
 

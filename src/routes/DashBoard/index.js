@@ -1,24 +1,8 @@
-import React, {PureComponent, Fragment} from 'react';
+import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'dva';
-import {routerRedux} from 'dva/router';
 import styles from './DashBoard.less';
 
-import {
-  Row,
-  Col,
-  Form,
-  Input,
-  Select,
-  Icon,
-  Button,
-  Dropdown,
-  Menu,
-  Modal,
-  message,
-  Badge,
-  Divider,
-  Card,
-} from 'antd';
+import {Card, Col, Form, Row,} from 'antd';
 
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
