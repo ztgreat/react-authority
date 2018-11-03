@@ -45,6 +45,7 @@ export default  class RoleSelect extends React.Component {
             visible={this.props.modalVisible}
             onOk={this.handleSubmit}
             onCancel={this.handleCloseModal}
+            destroyOnClose={true}
           >
 
             <FormItem labelCol={{span: 5}}wrapperCol={{span: 15}} label="角色选择">

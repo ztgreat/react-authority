@@ -53,6 +53,7 @@ export default class AdminForm extends React.PureComponent {
         visible={this.props.modalVisible}
         onOk={this.okHandle}
         onCancel={this.handleCloseModal}
+        destroyOnClose={true}
       >
 
 

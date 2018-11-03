@@ -34,6 +34,7 @@ export default class RoleForm extends React.PureComponent {
         visible={this.props.modalVisible}
         onOk={this.okHandle}
         onCancel={this.handleCloseModal}
+        destroyOnClose={true}
       >
         <FormItem required labelCol={{span: 5}} wrapperCol={{span: 15}} label="角色名称">
           {this.props.form.getFieldDecorator('name', {

@@ -79,6 +79,7 @@ export default class PermissionForm extends React.PureComponent {
         visible={this.props.modalVisible}
         onOk={this.okHandle}
         onCancel={this.handleCloseModal}
+        destroyOnClose={true}
       >
         <FormItem required labelCol={{span: 5}} wrapperCol={{span: 15}} label="权限层级">
           {this.props.form.getFieldDecorator('level', {

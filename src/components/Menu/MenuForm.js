@@ -79,6 +79,7 @@ export default class MenuForm extends React.PureComponent {
         visible={this.props.modalVisible}
         onOk={this.okHandle}
         onCancel={this.handleCloseModal}
+        destroyOnClose={true}
       >
         <FormItem required labelCol={{span: 5}} wrapperCol={{span: 15}} label="菜单层级">
           {this.props.form.getFieldDecorator('level', {

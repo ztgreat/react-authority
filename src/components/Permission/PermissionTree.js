@@ -113,6 +113,7 @@ export default class PermissionTree extends React.PureComponent {
         visible={this.props.modalVisible}
         onOk={this.okHandle}
         onCancel={this.handleCloseModal}
+        destroyOnClose={true}
       >
         <Search value ={this.state.searchValue} style={{ marginBottom: 8 }} placeholder="Search" onChange={this.onChangeSearch} />
         <Tree
