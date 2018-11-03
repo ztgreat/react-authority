@@ -3,6 +3,9 @@
 
 基于ant-design-pro的简易权限系统
 
+登录用户名：admin
+密码：000000
+
 配合 [springboot-shiro](https://github.com/ztgreat/springboot-shiro) 一起使用的demo，也可以配合 [springboot-security](https://github.com/ztgreat/springboot-security) 使用
 
 ### 菜单管理
