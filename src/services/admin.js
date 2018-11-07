@@ -29,13 +29,6 @@ export async function logout() {
 }
 
 
-/**
- * 获取当前用户信息
- */
-export async function queryCurrent() {
-  return request('/api/currentUser');
-}
-
 
 /**
  * 获取管理员列表
@@ -69,8 +62,13 @@ export async function saveOrUpdate(payload) {
   });
 }
 
-export async function queryById(payload) {
-  return request(`/api/admin/query/${payload.id}`, {
+/**
+ * 查询当前登录用户
+ * @param payload
+ * @returns {Promise<Object>}
+ */
+export async function queryUser() {
+  return request(`/api/admin/query`, {
     method: 'GET',
     body: {},
   });

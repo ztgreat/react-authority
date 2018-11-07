@@ -1,5 +1,5 @@
-import {list,deleteAdmin,saveOrUpdate} from "../services/admin";
-
+import {list,deleteAdmin,saveOrUpdate,queryUser} from "../services/admin";
+import {setAuthority} from '../utils/authority';
 export default {
   namespace: 'admin',
 
@@ -22,11 +22,21 @@ export default {
   },
 
   effects: {
-    * queryUsername(_, {call, put}) {
-      yield put({
-        type: 'saveCurrentUser',
-        payload: {},
-      });
+    * queryUser(_, {call, put}) {
+
+      const response = yield call(queryUser);
+      if(response && response.code =='0'){
+
+        localStorage.setItem('currentUserId', response.data.id);
+        localStorage.setItem('currentUsername', response.data.username);
+        setAuthority(response.data.currentAuthority);
+        yield put({
+          type: 'saveCurrentUser',
+          payload: response.data,
+        });
+      }
+
+
     },
 
     /**
@@ -91,9 +101,8 @@ export default {
     saveCurrentUser(state, action) {
       return {
         ...state,
-        currentUser: {
-          username: localStorage.getItem('currentUsername'),
-        }
+        currentUser: action.payload,
+        authority:action.payload.currentAuthority
       }
     },
 

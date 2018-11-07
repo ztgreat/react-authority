@@ -103,14 +103,9 @@ class BasicLayout extends React.PureComponent {
       });
     });
     this.props.dispatch({
-      type: 'admin/queryUsername',
+      type: 'admin/queryUser',
     });
 
-   /* const socket = io(`http://localhost:9092?uuid=${getAuthority()}`);
-    console.log('socket', socket);
-    socket.on('userLogin', function (data) {
-      console.log('userLogin data', data);
-    });*/
   }
 
   componentWillUnmount() {

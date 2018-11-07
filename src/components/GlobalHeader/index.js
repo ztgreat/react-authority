@@ -1,11 +1,9 @@
-import React, { PureComponent } from 'react';
-import { Menu, Icon, Spin, Tag, Dropdown, Avatar, Divider, Tooltip } from 'antd';
+import React, {PureComponent} from 'react';
+import {Avatar, Divider, Dropdown, Icon, Menu, Spin, Tag} from 'antd';
 import moment from 'moment';
 import groupBy from 'lodash/groupBy';
 import Debounce from 'lodash-decorators/debounce';
-import { Link } from 'dva/router';
-import NoticeIcon from '../NoticeIcon';
-import HeaderSearch from '../HeaderSearch';
+import {Link} from 'dva/router';
 import styles from './index.less';
 
 export default class GlobalHeader extends PureComponent {
@@ -98,7 +96,7 @@ export default class GlobalHeader extends PureComponent {
           {currentUser.username ? (
             <Dropdown overlay={menu}>
               <span className={`${styles.action} ${styles.account}`}>
-                <Avatar size="small" className={styles.avatar} src={currentUser.avatar} />
+                <Avatar size="small" className={styles.avatar} icon="user" />
                 <span className={styles.name}>{currentUser.username}</span>
               </span>
             </Dropdown>

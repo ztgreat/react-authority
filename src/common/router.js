@@ -81,7 +81,7 @@ export const getRouterData = app => {
     },
 
     '/home': {
-      component: dynamicWrapper(app, ['user'], () => import('../routes/DashBoard')),
+      component: dynamicWrapper(app, ['admin'], () => import('../routes/DashBoard')),
     },
 
     '/exception/403': {
@@ -111,10 +111,6 @@ export const getRouterData = app => {
 
     '/admin/list': {
       component: dynamicWrapper(app, ['admin','role'], () => import('../routes/Admin/AdminList')),
-    },
-
-    '/normal_user/list': {
-      component: dynamicWrapper(app, ['user','role'], () => import('../routes/User/UserList')),
     },
     '/auth/role/list': {
       component: dynamicWrapper(app, ['role'], () => import('../routes/Role/RoleList')),
