@@ -1,4 +1,5 @@
 import React, {Fragment} from 'react';
+import PropTypes from 'prop-types';
 import {Icon, Layout, message} from 'antd';
 import DocumentTitle from 'react-document-title';
 import {connect} from 'dva';
@@ -8,7 +9,7 @@ import classNames from 'classnames';
 import pathToRegexp from 'path-to-regexp';
 import {enquireScreen, unenquireScreen} from 'enquire-js';
 import GlobalFooter from '../components/GlobalFooter';
-
+import { getKeyPathMenuData } from '../common/router';
 import Authorized from '../utils/Authorized';
 import GlobalHeader from '../components/GlobalHeader';
 import SiderMenu from '../components/SiderMenu';
@@ -84,10 +85,52 @@ enquireScreen(b => {
 });
 
 class BasicLayout extends React.PureComponent {
+
+
+  static childContextTypes = {
+    location: PropTypes.object,
+    breadcrumbNameMap: PropTypes.object,
+  };
+
   state = {
     isMobile,
   };
 
+  getChildContext() {
+    const { location, menuData } = this.props;
+
+    let {routerData } = this.props;
+    let tempMenuData= getKeyPathMenuData(menuData);
+
+    // The route matches the menu
+    Object.keys(routerData).forEach(path => {
+      // Regular match item name
+      // eg.  router /user/:id === /user/chen
+      const pathRegexp = pathToRegexp(path);
+      const menuKey = Object.keys(tempMenuData).find(key => pathRegexp.test(`${key}`));
+      let menuItem = {};
+      // If menuKey is not empty
+      if (menuKey) {
+        menuItem = tempMenuData[menuKey];
+      }
+      let router = routerData[path];
+      // If you need to configure complex parameter routing,
+      // https://github.com/ant-design/ant-design-pro-site/blob/master/docs/router-and-nav.md#%E5%B8%A6%E5%8F%82%E6%95%B0%E7%9A%84%E8%B7%AF%E7%94%B1%E8%8F%9C%E5%8D%95
+      // eg . /list/:type/user/info/:id
+      router = {
+        ...router,
+        name: router.name || menuItem.name,
+        authority: router.authority || menuItem.authority,
+        hideInBreadcrumb: router.hideInBreadcrumb || menuItem.hideInBreadcrumb,
+      };
+      routerData[path] = router;
+    });
+
+    return {
+      location,
+      breadcrumbNameMap: getBreadcrumbNameMap(menuData, routerData),
+    };
+  }
 
   componentDidMount() {
 
