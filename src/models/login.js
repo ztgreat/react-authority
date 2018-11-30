@@ -1,6 +1,6 @@
 import {routerRedux} from 'dva/router';
 import {setAuthority} from '../utils/authority';
-import {login, logout} from '../services/admin';
+import {login, logout,oauth} from '../services/admin';
 import {reloadAuthorized} from '../utils/Authorized';
 
 export default {
@@ -15,6 +15,27 @@ export default {
       const response = yield call(login, payload);
 
 
+      // 登录成功
+      if (response !== undefined && response.code == '0') {
+
+        response.data['currentAuthority']='user';
+
+        yield put({
+          type: 'changeLoginStatus',
+          payload: response,
+        });
+
+        localStorage.setItem('currentUserId', response.data.id);
+        localStorage.setItem('currentUsername', response.data.username);
+        reloadAuthorized();
+
+        yield put(routerRedux.push('/home'));
+      }
+    },
+
+
+    * oauthLogin({payload}, {call, put}) {
+      const response = yield call(login, payload);
 
 
       // 登录成功
@@ -27,13 +48,37 @@ export default {
           payload: response,
         });
 
-
         localStorage.setItem('currentUserId', response.data.id);
         localStorage.setItem('currentUsername', response.data.username);
         reloadAuthorized();
+      }
+    },
+
+
+    * oauthAuthorize({payload}, {call, put}) {
+      const response = yield call(oauth, payload);
+
+      // 登录成功
+      if (response !== undefined && response.code == '0') {
+
+        response.data['currentAuthority']='user';
+
+        yield put({
+          type: 'changeLoginStatus',
+          payload: response,
+        });
+        localStorage.setItem('currentUserId', response.data.id);
+        localStorage.setItem('currentUsername', response.data.username);
+        reloadAuthorized();
+
+        const response = yield call(oauth, payload);
+
+
         yield put(routerRedux.push('/home'));
       }
     },
+
+
     * logout(_, {call, put, select}) {
       try {
 

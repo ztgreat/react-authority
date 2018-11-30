@@ -29,6 +29,19 @@ export async function logout() {
 }
 
 
+/**
+ * oauth 授权
+ * @returns {Promise<Object>}
+ */
+export async function oauth(payload) {
+  return request(`/api/oauth/authorize`, {
+    method: 'GET',
+    body: payload
+  });
+
+}
+
+
 
 /**
  * 获取管理员列表

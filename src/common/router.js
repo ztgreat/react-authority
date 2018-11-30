@@ -2,6 +2,7 @@ import {createElement} from 'react';
 import dynamic from 'dva/dynamic';
 import pathToRegexp from 'path-to-regexp';
 import {getMenuData} from './menu';
+import OauthAuthorize from "../routes/Oauth/OauthAuthorize";
 
 let routerDataCache;
 
@@ -75,7 +76,25 @@ export const getKeyPathMenuData = (menuData) => getFlatMenuData(menuData);
 
 export const getRouterData = app => {
   const routerConfig = {
+
+
+    /*===================================登录================================================*/
+
+    '/user': {
+      component: dynamicWrapper(app, [], () => import('../layouts/UserLayout')),
+    },
+    '/oauth': {
+      component: dynamicWrapper(app, [], () => import('../layouts/UserLayout')),
+    },
+    '/user/login': {
+      component: dynamicWrapper(app, ['login'], () => import('../routes/Admin/Login')),
+    },
+    '/oauth/authorize': {
+      component: dynamicWrapper(app, ['login'], () => import('../routes/Oauth/OauthAuthorize')),
+    },
+
     /*===================================系统路由================================================*/
+
     '/': {
       component: dynamicWrapper(app, ['menu','admin','login'], () => import('../layouts/BasicLayout')),
     },
@@ -98,14 +117,7 @@ export const getRouterData = app => {
         import('../routes/Exception/triggerException')
       ),
     },
-    /*===================================登录================================================*/
 
-    '/user': {
-      component: dynamicWrapper(app, [], () => import('../layouts/UserLayout')),
-    },
-    '/user/login': {
-      component: dynamicWrapper(app, ['login'], () => import('../routes/Admin/Login')),
-    },
 
     /*===================================权限路由================================================*/
 
