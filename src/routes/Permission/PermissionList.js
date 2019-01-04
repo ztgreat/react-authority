@@ -115,6 +115,14 @@ export default class PermissionList extends PureComponent {
     });
   };
 
+  getAllParentPermission =()=>{
+    const {dispatch} = this.props;
+    dispatch({
+      type: 'permission/getPermissionByParentId',
+      payload: {parentId:0},
+    });
+  };
+
 
   /**
    * 提交 添加的权限
@@ -137,6 +145,7 @@ export default class PermissionList extends PureComponent {
         type: 'permission/updateLoading',
         payload: false,
       })
+      this.getAllParentPermission();
       this.refush();
     });
   };
