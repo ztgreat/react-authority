@@ -1,8 +1,6 @@
 import {deleteBatch, getMenuTree, getUserMenuTree, saveOrUpdate} from '../services/menu';
-
 export default {
   namespace: 'menu',
-
   state: {
     list: [],
     menuTree: {
@@ -13,18 +11,29 @@ export default {
     },
     menuFormModalVisible:false,
     menuItem:{},
+    loading:false,
   },
 
   effects: {
-    * getUserMenuTree({payload}, {call, put}) {
-      const response = yield call(getUserMenuTree, payload);
-      if (!response || response.code =='1') {
-        return;
-      }
+
+    *updateLoading({payload}, {call, put}){
+
       yield put({
-        type: 'save',
-        payload: response.data,
+        type: 'setLoading',
+        payload: payload,
       });
+    },
+
+    * getUserMenuTree({payload}, {call, put}) {
+        const response = yield call(getUserMenuTree, payload);
+        if (!response || response.code !='0') {
+          return false;
+        }
+        yield put({
+          type: 'save',
+          payload: response.data,
+        });
+        return true;
     },
 
 
@@ -36,62 +45,68 @@ export default {
      * @returns {IterableIterator<*>}
      */
       *openMenuForm({payload}, {call, put}) {
-      yield put({
-        type: 'setMenuItem',
-        payload: payload,
-      });
-      yield put({
-        type: 'setMenuFormModalVisible',
-        payload: true,
-      });
+          yield put({
+            type: 'setMenuItem',
+            payload: payload,
+          });
+          yield put({
+            type: 'setMenuFormModalVisible',
+            payload: true,
+          });
     },
 
     *closeMenuForm({payload}, {call, put}) {
-      yield put({
-        type: 'setMenuFormModalVisible',
-        payload: false,
-      });
+        yield put({
+          type: 'setMenuFormModalVisible',
+          payload: false,
+        });
     },
 
 
-    * getMenuTree({payload}, {call, put}) {
-      const response = yield call(getMenuTree);
-      if (!response) {
-        return;
-      }
-      yield put({
-        type: 'saveAll',
-        payload: response.data,
-      });
+    *getMenuTree({payload}, {call, put}) {
+        const response = yield call(getMenuTree);
+        if (!response || response.code !='0') {
+          return false;
+        }
+        yield put({
+          type: 'saveAll',
+          payload: response.data,
+        });
+        return true;
     },
     * saveOrUpdate({payload}, {call, put}) {
         const response = yield call(saveOrUpdate, payload);
-        if (!response) {
-            return;
+        if (!response || response.code !='0') {
+          return false;
         }
         if(response.code=='0'){
           yield put({
             type:"closeMenuForm"
           })
-
         }
-
+        return true;
     },
     * delete({payload}, {call, put}) {
         const response = yield call(deleteBatch, payload);
-        if (!response) {
-
+        if (!response || response.code !='0') {
+          return false;
         }
+        return true;
+    },
+  },
+  reducers: {
+
+    setLoading(state, action){
+      return {
+        ...state,
+        loading: action.payload,
+      };
     },
 
-  },
-
-  reducers: {
     save(state, action) {
       return {
         ...state,
         list: action.payload,
-
       };
     },
     saveAll(state, action) {
@@ -109,17 +124,12 @@ export default {
         menuItem: action.payload
       };
     },
-
-
     setMenuFormModalVisible(state, action) {
       return {
         ...state,
         menuFormModalVisible: action.payload
       };
     },
-
-
-
   },
 
 };

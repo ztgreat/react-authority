@@ -1,10 +1,9 @@
 import React from 'react';
-import {Input, Modal, Tree} from 'antd';
+import {Modal,Tree,Input } from 'antd';
 
 const TreeNode = Tree.TreeNode;
 const Search = Input.Search;
-export default class MenuTree extends React.PureComponent {
-
+export default class PermissionTree extends React.PureComponent {
 
   state = {
     /**
@@ -38,7 +37,7 @@ export default class MenuTree extends React.PureComponent {
 
 
   okHandle = () => {
-      this.props.handleSubmit();
+    this.props.handleSubmit();
   };
 
   handleCloseModal = () => {
@@ -50,7 +49,7 @@ export default class MenuTree extends React.PureComponent {
   };
 
   onCheck = (checkedKeys) => {
-    this.props.onCheck(checkedKeys.checked);
+    this.props.onCheck(checkedKeys);
   };
 
   renderTreeNodes = (data) => data.map((item) => {
@@ -109,26 +108,26 @@ export default class MenuTree extends React.PureComponent {
   render() {
     return (
       <Modal
-        title="菜单授权"
+        title="资源授权"
         visible={this.props.modalVisible}
         onOk={this.okHandle}
         onCancel={this.handleCloseModal}
         destroyOnClose={true}
+        maskClosable={false}
+        confirmLoading={this.props.loading}
       >
         <Search value ={this.state.searchValue} style={{ marginBottom: 8 }} placeholder="Search" onChange={this.onChangeSearch} />
         <Tree
           checkable
-          checkStrictly={true}
           onExpand={this.onExpand}
           expandedKeys={this.state.expandedKeys}
-          onCheck={this.onCheck}
+          onCheck={this.props.onCheck}
           checkedKeys={this.props.checkedKeys}
           autoExpandParent={this.state.autoExpandParent}
         >
           {this.renderTreeNodes(this.props.treeData)}
 
         </Tree>
-
       </Modal>
     );
   };

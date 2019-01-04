@@ -19,14 +19,25 @@ export default {
     adminItem:{},
     adminFormModalVisible:false,
     adminFormOption:'',
+    loading:false,
   },
 
   effects: {
-    * queryUser(_, {call, put}) {
 
-      const response = yield call(queryUser);
-      if(response && response.code =='0'){
+    *updateLoading({payload}, {call, put}){
+      yield put({
+        type: 'setLoading',
+        payload: payload,
+      });
+    },
 
+
+    *queryUser(_, {call, put}) {
+
+        const response = yield call(queryUser);
+        if (!response || response.code !='0') {
+          return false;
+        }
         localStorage.setItem('currentUserId', response.data.id);
         localStorage.setItem('currentUsername', response.data.username);
         setAuthority(response.data.currentAuthority);
@@ -34,9 +45,7 @@ export default {
           type: 'saveCurrentUser',
           payload: response.data,
         });
-      }
-
-
+        return true;
     },
 
     /**
@@ -48,25 +57,27 @@ export default {
      */
       *list({payload}, {select,call, put}) {
 
-      const param = () => {
-        return ({search: payload.search||'', status: payload.status||''});
-      };
-
-      const response = yield call(list, param());
-      if (!response) {
-        return;
-      }
-      yield put({
-        type: 'savePageData',
-        payload: response,
-      });
+          const param = () => {
+            return ({search: payload.search||'', status: payload.status||''});
+          };
+          const response = yield call(list, param());
+          if (!response || response.code !='0') {
+            return false;
+          }
+          yield put({
+            type: 'savePageData',
+            payload: response,
+          });
+          return true;
     },
     * delete({payload}, {call, put}) {
 
-      const response = yield call(deleteAdmin, {ids:payload.ids});
-      if (!response) {
-
-      }},
+        const response = yield call(deleteAdmin, {ids:payload.ids});
+        if (!response || response.code !='0') {
+          return false;
+        }
+        return true;
+      },
 
 
       /**
@@ -90,13 +101,22 @@ export default {
       },
     * saveOrUpdate({payload}, {call, put}) {
         const response = yield call(saveOrUpdate, payload);
-        if (!response) {
-
+        if (!response || response.code !='0') {
+          return false;
         }
+        return true;
       },
   },
 
   reducers: {
+
+    setLoading(state, action){
+      return {
+        ...state,
+        loading: action.payload,
+      };
+    },
+
     //暂时从本地获取用户信息
     saveCurrentUser(state, action) {
       return {

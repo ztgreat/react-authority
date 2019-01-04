@@ -1,13 +1,9 @@
 import React from 'react';
-import {Form, Input, Modal, Select, Switch,} from 'antd';
+import {Form, Input, Modal, Switch,} from 'antd';
 
 const FormItem = Form.Item;
-const {Option} = Select;
-
 @Form.create()
 export default class RoleForm extends React.PureComponent {
-
-
   okHandle = () => {
     this.props.form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -19,13 +15,10 @@ export default class RoleForm extends React.PureComponent {
       this.props.handleSubmit(fieldsValue);
     });
   };
-
   handleCloseModal = () => {
     this.props.form.resetFields();
     this.props.handleCloseModal();
   };
-
-
   render() {
     const {title} = this.props;
     return (
@@ -35,6 +28,8 @@ export default class RoleForm extends React.PureComponent {
         onOk={this.okHandle}
         onCancel={this.handleCloseModal}
         destroyOnClose={true}
+        maskClosable={false}
+        confirmLoading={this.props.loading}
       >
         <FormItem required labelCol={{span: 5}} wrapperCol={{span: 15}} label="角色名称">
           {this.props.form.getFieldDecorator('name', {
@@ -44,16 +39,12 @@ export default class RoleForm extends React.PureComponent {
             <Input placeholder="角色名称" style={{width: 300}}/>
           )}
         </FormItem>
-
-
         <FormItem labelCol={{span: 5}} wrapperCol={{span: 15}} label="角色编码">
           {this.props.form.getFieldDecorator('code', {
             initialValue: this.props.record.code || '',
             rules: [{required: true, message: '请输入菜单编码'}],
           })(<Input placeholder="菜单编码" style={{width: 300}}/>)}
         </FormItem>
-
-
         <FormItem required labelCol={{span: 5}} wrapperCol={{span: 15}} label="菜单状态">
 
           {this.props.form.getFieldDecorator('status', {
@@ -64,10 +55,7 @@ export default class RoleForm extends React.PureComponent {
             <Switch checkedChildren="启用"
                     unCheckedChildren="禁用"/>
           )}
-
-
         </FormItem>
-
       </Modal>
     );
   }

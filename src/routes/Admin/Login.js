@@ -4,20 +4,16 @@ import {Link} from 'dva/router';
 import {Alert, Checkbox} from 'antd';
 import Login from '../../components/Login';
 import styles from './Login.less';
-
 const {  UserName, Password, Submit } = Login;
-
 @connect(({ login, loading }) => ({
   login,
   submitting: loading.effects['login/login'],
 }))
-
 export default class LoginPage extends Component{
 
   state = {
     autoLogin: true,
   };
-
   handleSubmit = (err, values) => {
     if (!err) {
       this.props.dispatch({
@@ -28,17 +24,14 @@ export default class LoginPage extends Component{
       });
     }
   };
-
   changeAutoLogin = e => {
     this.setState({
       autoLogin: e.target.checked,
     });
   };
-
   renderMessage = content => {
     return <Alert style={{ marginBottom: 24 }} message={content} type="error" showIcon />;
   };
-
   render() {
     const { login, submitting } = this.props;
     const { type } = this.state;
@@ -69,5 +62,4 @@ export default class LoginPage extends Component{
       </div>
     );
   }
-
 }

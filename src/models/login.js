@@ -12,55 +12,48 @@ export default {
 
   effects: {
     * login({payload}, {call, put}) {
-      const response = yield call(login, payload);
+        const response = yield call(login, payload);
 
-
-      // 登录成功
-      if (response !== undefined && response.code == '0') {
-
+        if (!response || response.code !='0') {
+          return false;
+        }
+        // 登录成功
         response.data['currentAuthority']='user';
-
         yield put({
           type: 'changeLoginStatus',
           payload: response,
         });
-
         localStorage.setItem('currentUserId', response.data.id);
         localStorage.setItem('currentUsername', response.data.username);
         reloadAuthorized();
-
         yield put(routerRedux.push('/home'));
-      }
     },
 
 
     * oauthLogin({payload}, {call, put}) {
-      const response = yield call(login, payload);
-
-
-      // 登录成功
-      if (response !== undefined && response.code == '0') {
-
+        const response = yield call(login, payload);
+        // 登录成功
+        if (!response || response.code !='0') {
+          return false;
+        }
         response.data['currentAuthority']='user';
-
         yield put({
           type: 'changeLoginStatus',
           payload: response,
         });
-
         localStorage.setItem('currentUserId', response.data.id);
         localStorage.setItem('currentUsername', response.data.username);
         reloadAuthorized();
-      }
+        return true;
     },
 
 
     * oauthAuthorize({payload}, {call, put}) {
-      const response = yield call(oauth, payload);
-
-      // 登录成功
-      if (response !== undefined && response.code == '0') {
-
+        const response = yield call(oauth, payload);
+        // 登录成功
+        if (!response || response.code !='0') {
+          return false;
+        }
         response.data['currentAuthority']='user';
 
         yield put({
@@ -71,45 +64,41 @@ export default {
         localStorage.setItem('currentUsername', response.data.username);
         reloadAuthorized();
 
-        const response = yield call(oauth, payload);
+        const res = yield call(oauth, payload);
 
 
         yield put(routerRedux.push('/home'));
-      }
     },
 
 
     * logout(_, {call, put, select}) {
-      try {
-
-        const response = yield call(logout);
-        if (response !== undefined && response.code === '0') {
+        try {
+          const response = yield call(logout);
+          if (response !== undefined && response.code === '0') {
+            yield put({
+              type: 'logoutSuccess',
+            });
+            // get location pathname
+            const urlParams = new URL(window.location.href);
+            const pathname = yield select(state => state.routing.location.pathname);
+            // add the parameters in the url
+            urlParams.searchParams.set('redirect', pathname);
+            window.history.replaceState(null, 'login', urlParams.href);
+          }
+        } finally {
           yield put({
-            type: 'logoutSuccess',
+            type: 'changeLoginStatus',
+            payload: {
+              data: {
+                status: false,
+                currentAuthority: 'guest',
+              }
+            },
           });
-
-          // get location pathname
-          const urlParams = new URL(window.location.href);
-          const pathname = yield select(state => state.routing.location.pathname);
-          // add the parameters in the url
-          urlParams.searchParams.set('redirect', pathname);
-          window.history.replaceState(null, 'login', urlParams.href);
+          //reloadAuthorized();
+          yield put(routerRedux.push('/user/login'));
         }
-
-      } finally {
-        yield put({
-          type: 'changeLoginStatus',
-          payload: {
-            data: {
-              status: false,
-              currentAuthority: 'guest',
-            }
-          },
-        });
-        //reloadAuthorized();
-        yield put(routerRedux.push('/user/login'));
-      }
-    },
+      },
   },
 
   reducers: {

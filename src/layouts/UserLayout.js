@@ -74,5 +74,4 @@ class UserLayout extends React.PureComponent {
     );
   }
 }
-
 export default UserLayout;

@@ -3,15 +3,11 @@ import {connect} from 'dva';
 import {Badge, Button, Card, Col, Dropdown, Form, Icon, Input, Menu, message, Modal, Row, Select,} from 'antd';
 import StandardTable from '../../components/StandardTable';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-import RoleSelectTree from '../../components/Role/RoleSelectTree';
-
+import RoleSelectTree from './RoleSelectTree';
 import styles from '../TableList.less';
-
 const FormItem = Form.Item;
 const statusMap = ['default', 'success'];
 const status = ['不可用', '可用'];
-
-
 @connect(({ role, loading }) => ({
   role,
   loading: loading.models.role,
@@ -35,9 +31,7 @@ export default class RoleAllocation extends PureComponent {
       payload:{}
     });
   }
-
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
-
     const {dispatch} = this.props;
     dispatch({
       type: 'role/listAllUserRoles',
@@ -55,7 +49,6 @@ export default class RoleAllocation extends PureComponent {
   handleSearch = e => {
     e.preventDefault();
     const { dispatch, form } = this.props;
-
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       this.setState({
@@ -81,7 +74,6 @@ export default class RoleAllocation extends PureComponent {
         search: '',
       },
     });
-
     dispatch({
       type: 'role/listAllUserRoles',
       payload:{}
@@ -89,9 +81,7 @@ export default class RoleAllocation extends PureComponent {
   };
 
   showDeleteConfirm=()=> {
-
     const confirm = Modal.confirm;
-
     confirm({
       title: '你确定删除选中的数据?',
       content: '',
@@ -109,9 +99,7 @@ export default class RoleAllocation extends PureComponent {
   handleMenuClick = e => {
     const { dispatch } = this.props;
     const { selectedRows } = this.state;
-
     if (!selectedRows) return;
-
     switch (e.key) {
       case 'remove':
         dispatch({
@@ -130,23 +118,16 @@ export default class RoleAllocation extends PureComponent {
         break;
     }
   };
-
   handleSelectRows = rows => {
     this.setState({
       selectedRows: rows,
     });
   };
 
-
-
-
   /**
    *  角色选择提交
    */
   roleSelectSubmitHandle = values=>{
-
-
-    console.log('formvalue', values);
 
     this.props.dispatch({
       type: 'role/updateUserRoles',
@@ -157,17 +138,12 @@ export default class RoleAllocation extends PureComponent {
         })
       },
     });
-
   };
-
   roleSelectHidenModal =()=>{
-
     this.setState({
       roleModalVisible:false
     });
   };
-
-
   roleSelectShowModal =(record)=>{
 
     /**
@@ -177,13 +153,11 @@ export default class RoleAllocation extends PureComponent {
       type: 'role/querySingleUserRole',
       payload:record.id
     });
-
     this.setState({
       roleModalVisible:true,
       userId:record.id
     });
   };
-
 
   renderSimpleForm() {
     const { getFieldDecorator } = this.props.form;
@@ -212,8 +186,6 @@ export default class RoleAllocation extends PureComponent {
 
   render() {
     const { role: { data },role:{ userRoles },loading } = this.props;
-
-
     const { selectedRows } = this.state;
     const columns = [
       /*{
@@ -271,7 +243,6 @@ export default class RoleAllocation extends PureComponent {
         <Menu.Item key="approval">批量审批</Menu.Item>
       </Menu>
     );
-
     return (
       <PageHeaderLayout title="角色分配">
         <Card bordered={false}>

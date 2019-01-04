@@ -3,26 +3,20 @@ import {connect} from 'dva';
 import {Badge, Button, Card, Divider, Form, message, Modal, Select,} from 'antd';
 import StandardTable from '../../components/StandardTable';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-
 import styles from '../TableList.less';
-import PermissionForm from "../../components/Permission/PermissionForm";
-
+import PermissionForm from "./PermissionForm";
 const statusMap = ['default', 'success'];
 const status = ['不可用', '可用'];
-
-
 @connect(({permission, loading}) => ({
   permission,
   loading: loading.models.permission,
 }))
-
 
 export default class PermissionList extends PureComponent {
   state = {
     selectedRows: [],
     record: {},
   };
-
   componentDidMount() {
     const {
       dispatch
@@ -32,13 +26,10 @@ export default class PermissionList extends PureComponent {
       type: 'permission/getPermissionTree',
       payload: {},
     });
-
     dispatch({
       type: 'permission/getPermissionByParentId',
       payload: {parentId:0},
     });
-
-
   }
 
   refush =()=>{
@@ -51,20 +42,15 @@ export default class PermissionList extends PureComponent {
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const {dispatch} = this.props;
-
     const params = {
       current: pagination.current,
     };
-
     dispatch({
       type: 'permission/getPermissionTree',
       payload: params,
     });
   };
-
-
   showDeleteConfirm = (record) => {
-
     const confirm = Modal.confirm;
     const self = this;
     confirm({
@@ -88,7 +74,6 @@ export default class PermissionList extends PureComponent {
   handleDelete = (record) => {
     const {dispatch} = this.props;
     if (!record) return;
-
     if (record.isParent == true) {
       message.error('需要先删除子菜单');
       return;
@@ -101,15 +86,12 @@ export default class PermissionList extends PureComponent {
     }).then(()=>{
       this.refush();
     });
-
   };
 
   handleBatchDelete = () => {
     const {dispatch} = this.props;
     const {selectedRows} = this.state;
     if (!selectedRows) return;
-
-
     for (var row of selectedRows) {
       if (row.isParent == true) {
         message.error('需要先删除子菜单');
@@ -141,16 +123,23 @@ export default class PermissionList extends PureComponent {
   handleSubmitPermission = values => {
     const {dispatch,permission: {permissionItem}} = this.props;
     values['id'] = permissionItem.id;
-    console.log('formvalue', values);
+    //更新按钮状态
+    dispatch({
+      type: 'permission/updateLoading',
+      payload: true,
+    })
     dispatch({
       type: 'permission/saveOrUpdate',
       payload: values,
     }).then(()=>{
+      //更新按钮状态
+      dispatch({
+        type: 'permission/updateLoading',
+        payload: false,
+      })
       this.refush();
     });
   };
-
-
 
   /**
    * 弹窗控制
@@ -172,9 +161,8 @@ export default class PermissionList extends PureComponent {
   };
 
   render() {
-    const {permission: {permissionTree,parentPermission,permissionFormModalVisible,permissionItem}, loading} = this.props;
+    const {permission: {permissionTree,parentPermission,permissionFormModalVisible,permissionItem,loading}} = this.props;
     const {selectedRows} = this.state;
-
     const columns = [
       /*{
         title: '主键',
@@ -253,9 +241,12 @@ export default class PermissionList extends PureComponent {
             />
           </div>
         </Card>
-        <PermissionForm record={permissionItem} modalVisible={permissionFormModalVisible}
-                  handleSubmit={this.handleSubmitPermission}
-                  handleCloseModal={this.handleCloseModal} permissions={parentPermission}/>
+        <PermissionForm
+          record={permissionItem}
+          modalVisible={permissionFormModalVisible}
+          loading={loading}
+          handleSubmit={this.handleSubmitPermission}
+          handleCloseModal={this.handleCloseModal} permissions={parentPermission}/>
       </PageHeaderLayout>
     );
   }

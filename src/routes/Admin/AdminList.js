@@ -3,21 +3,12 @@ import {connect} from 'dva';
 import {Badge, Button, Card, Col, Divider, Form, Input, Modal, Row, Select,} from 'antd';
 import StandardTable from '../../components/StandardTable';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-import RoleSelectTree from '../../components/Role/RoleSelectTree';
-import AdminForm from '../../components/Admin/AdminForm';
-
+import RoleSelectTree from '../Role/RoleSelectTree';
+import AdminForm from './AdminForm';
 import styles from '../TableList.less';
-
 const FormItem = Form.Item;
-const { Option } = Select;
-const getValue = obj =>
-  Object.keys(obj)
-    .map(key => obj[key])
-    .join(',');
 const statusMap = ['default', 'success'];
 const status = ['不可用', '可用'];
-
-
 @connect(({ role,admin,loading }) => ({
   role,
   admin,
@@ -35,7 +26,6 @@ export default class RoleAllocation extends PureComponent {
     },
     userId:null,
   };
-
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
@@ -43,7 +33,6 @@ export default class RoleAllocation extends PureComponent {
       payload:{}
     });
   }
-
   refush =()=>{
     const {dispatch} = this.props;
     dispatch({
@@ -51,9 +40,7 @@ export default class RoleAllocation extends PureComponent {
       payload:{}
     });
   };
-
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
-
     const {dispatch} = this.props;
     dispatch({
       type: 'admin/list',
@@ -70,9 +57,7 @@ export default class RoleAllocation extends PureComponent {
    */
   handleSearch = e => {
     e.preventDefault();
-
     const { dispatch, form } = this.props;
-
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       this.setState({
@@ -98,7 +83,6 @@ export default class RoleAllocation extends PureComponent {
         search: '',
       },
     });
-
     dispatch({
       type: 'admin/list',
       payload:{}
@@ -126,14 +110,24 @@ export default class RoleAllocation extends PureComponent {
   handleSubmitAdmin = values => {
     const {dispatch,admin:{adminItem}} = this.props;
     values['id']=adminItem.id||null;
+
+    //更新按钮状态
+    dispatch({
+      type: 'admin/updateLoading',
+      payload: true,
+    })
     dispatch({
       type: 'admin/saveOrUpdate',
       payload: values,
     }).then(()=>{
+      //更新按钮状态
+      this.props.dispatch({
+        type: 'admin/updateLoading',
+        payload: false,
+      });
       this.refush();
     });
   };
-
 
   closeModal = (type) => {
     const {dispatch} = this.props;
@@ -143,11 +137,8 @@ export default class RoleAllocation extends PureComponent {
     });
   };
 
-
   showDeleteConfirm=(record)=> {
-
     const confirm = Modal.confirm;
-
     let self =this;
     confirm({
       title: '你确定删除选中的数据?',
@@ -167,7 +158,6 @@ export default class RoleAllocation extends PureComponent {
   handleDelete = (record) => {
     const {dispatch} = this.props;
     if (!record) return;
-
     dispatch({
       type: 'admin/delete',
       payload: {
@@ -176,7 +166,6 @@ export default class RoleAllocation extends PureComponent {
     }).then(()=>{
       this.refush();
     });
-
   };
 
   handleSelectRows = rows => {
@@ -185,14 +174,17 @@ export default class RoleAllocation extends PureComponent {
     });
   };
 
-
   /**
    *  角色选择提交
    */
   roleSelectSubmitHandle = values=>{
 
+    //更新按钮状态
+    this.props.dispatch({
+      type: 'admin/updateLoading',
+      payload: true,
+    })
 
-    console.log('formvalue', values);
 
     this.props.dispatch({
       type: 'role/updateUserRoles',
@@ -202,17 +194,20 @@ export default class RoleAllocation extends PureComponent {
           return parseInt(item);
         })
       },
+    }).then(()=>{
+      //更新按钮状态
+      this.props.dispatch({
+        type: 'admin/updateLoading',
+        payload: false,
+      })
     });
-
   };
 
   roleSelectHidenModal =()=>{
-
     this.setState({
       roleModalVisible:false
     });
   };
-
 
   roleSelectShowModal =(record)=>{
 
@@ -223,7 +218,6 @@ export default class RoleAllocation extends PureComponent {
       type: 'role/querySingleUserRole',
       payload:record.id
     });
-
     this.setState({
       roleModalVisible:true,
       userId:record.id
@@ -256,7 +250,7 @@ export default class RoleAllocation extends PureComponent {
   }
 
   render() {
-    const {role:{ userRoles },admin:{adminPageData,adminFormModalVisible,adminItem,adminFormOption},loading ,} = this.props;
+    const {role:{ userRoles },admin:{adminPageData,adminFormModalVisible,adminItem,adminFormOption,loading} ,} = this.props;
 
     const { selectedRows } = this.state;
     const columns = [
@@ -313,7 +307,6 @@ export default class RoleAllocation extends PureComponent {
       },
     ];
 
-
     return (
       <PageHeaderLayout title="系统用户列表">
         <Card bordered={false}>
@@ -327,7 +320,7 @@ export default class RoleAllocation extends PureComponent {
             <StandardTable
               selectedRows={selectedRows}
               hiddenCheck={true}
-              loading={loading}
+              loading={this.props.loading}
               data={adminPageData}
               rowKey="id"
               columns={columns}
@@ -337,12 +330,16 @@ export default class RoleAllocation extends PureComponent {
           </div>
         </Card>
 
-        <AdminForm title={`${adminFormOption}管理员`} record={adminItem} modalVisible={adminFormModalVisible}
-                  handleSubmit={this.handleSubmitAdmin}
-                  handleCloseModal={(p) => this.closeModal('admin')}/>
+        <AdminForm
+          title={`${adminFormOption}管理员`}
+          loading={loading}
+          record={adminItem} modalVisible={adminFormModalVisible}
+          handleSubmit={this.handleSubmitAdmin}
+          handleCloseModal={(p) => this.closeModal('admin')}/>
 
         <RoleSelectTree
           modalVisible={this.state.roleModalVisible}
+          loading={loading}
           treeData={userRoles}
           handleSubmit={this.roleSelectSubmitHandle}
           handleCloseModal={this.roleSelectHidenModal}

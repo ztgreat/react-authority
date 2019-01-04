@@ -3,15 +3,12 @@ import {connect} from 'dva';
 import {Badge, Button, Card, Divider, Form, Modal, Select,} from 'antd';
 import StandardTable from '../../components/StandardTable';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-import RoleForm from '../../components/Role/RoleForm';
-import MenuTree from '../../components/Menu/MenuTree';
-import PermissionTree from '../../components/Permission/PermissionTree';
+import RoleForm from './RoleForm';
+import MenuTree from '../Menu/MenuTree';
+import PermissionTree from '../Permission/PermissionTree';
 import styles from '../TableList.less';
-
 const statusMap = ['default', 'success'];
 const status = ['不可用', '可用'];
-
-
 @connect(({role, loading}) => ({
   role,
   loading: loading.models.role,
@@ -21,22 +18,18 @@ export default class RoleList extends PureComponent {
   state = {
     selectedRows: [],
   };
-
   componentDidMount() {
     const {dispatch} = this.props;
     dispatch({
       type: 'role/page',
     });
   }
-
   refush =()=>{
     const {dispatch} = this.props;
     dispatch({
       type: 'role/page',
     });
   };
-
-
   //批量刪除显示
   showDeleteConfirm = (record) => {
     const confirm = Modal.confirm;
@@ -64,7 +57,6 @@ export default class RoleList extends PureComponent {
       payload: {
         ids: selectedRows.map(row => row.id),
       },
-
     }).then(()=>{
       this.refush();
     });
@@ -73,7 +65,6 @@ export default class RoleList extends PureComponent {
   handleDelete = (record) => {
     const {dispatch} = this.props;
     if (!record) return;
-
     dispatch({
       type: 'role/delete',
       payload: {
@@ -128,36 +119,58 @@ export default class RoleList extends PureComponent {
     let vaildKey=checkedKeys.map(item=>{
       return parseInt(item);
     });
-    console.log('handleSubmitRoleMenu',vaildKey);
+    //更新按钮状态
+    dispatch({
+      type: 'role/updateLoading',
+      payload: true,
+    })
     dispatch({
       type: 'role/updateMenus',
       payload: {
         menusIds:vaildKey
       },
+    }).then(()=>{
+      //更新按钮状态
+      dispatch({
+        type: 'role/updateLoading',
+        payload: false,
+      })
     });
+
+
   };
 
 //角色资源提交
   handleSubmitRolePermission = () => {
     const {dispatch,role:{checkedKeys,rolePermission}} = this.props;
-
     let parentKey = rolePermission.map(item=>{
       return(item.key);
     });
-
     let vaildKey=checkedKeys.map(item=>{
       return parseInt(item);
     }).filter(item =>
       parentKey.indexOf(item)==-1
     );
 
-    console.log('handleSubmitRolePermission',vaildKey);
+    //更新按钮状态
+    dispatch({
+      type: 'role/updateLoading',
+      payload: true,
+    })
+
     dispatch({
       type: 'role/updatePermission',
       payload: {
         permissionIds:vaildKey
       },
+    }).then(()=>{
+      //更新按钮状态
+      dispatch({
+        type: 'role/updateLoading',
+        payload: false,
+      })
     });
+
   };
 
   /**
@@ -172,7 +185,6 @@ export default class RoleList extends PureComponent {
     });
   };
 
-
   /**
    * 显示菜单树弹窗
    * @param record
@@ -185,7 +197,6 @@ export default class RoleList extends PureComponent {
     });
 
   };
-
 
   /**
    * 显示资源树弹窗
@@ -200,7 +211,6 @@ export default class RoleList extends PureComponent {
     });
   };
 
-
   closeModal = (type) => {
     const {dispatch} = this.props;
     dispatch({
@@ -212,8 +222,7 @@ export default class RoleList extends PureComponent {
 
   render() {
     const {role: {data, roleMenu, rolePermission, roleFormModalVisible,
-      roleItem, permissionAuthModalVisible, menuAuthModalVisible,roleFormOption,checkedKeys}, loading} = this.props;
-
+      roleItem, permissionAuthModalVisible, menuAuthModalVisible,roleFormOption,checkedKeys,loading} } = this.props;
     const {selectedRows} = this.state;
     const columns = [
       /*{
@@ -261,10 +270,8 @@ export default class RoleList extends PureComponent {
         ),
       },
     ];
-
-
     return (
-      <PageHeaderLayout title="角色添加、删除、修改等操作">
+      <PageHeaderLayout title="角色管理">
         <Card bordered={false}>
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
@@ -279,7 +286,7 @@ export default class RoleList extends PureComponent {
             </div>
             <StandardTable
               selectedRows={selectedRows}
-              loading={loading}
+              loading={this.props.loading}
               hiddenCheck={true}
               data={data}
               rowKey="id"
@@ -295,6 +302,7 @@ export default class RoleList extends PureComponent {
         <MenuTree
           treeData={roleMenu}
           checkedKeys={checkedKeys}
+          loading={loading}
           onCheck={this.onChangeSelectKeys}
           modalVisible={menuAuthModalVisible}
           handleSubmit={this.handleSubmitRoleMenu}
@@ -305,6 +313,7 @@ export default class RoleList extends PureComponent {
           treeData={rolePermission}
           checkedKeys={checkedKeys}
           onCheck={this.onChangeSelectKeys}
+          loading={loading}
           modalVisible={permissionAuthModalVisible}
           handleSubmit={this.handleSubmitRolePermission}
           handleCloseModal={(p) => this.closeModal('authPermission')}

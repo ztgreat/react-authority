@@ -17,8 +17,6 @@ import {getMenuData} from '../common/menu';
 import {getRoutes} from '../utils/utils';
 import NotFound from '../routes/Exception/404';
 import logo from '../assets/logo.svg';
-
-
 const { Content, Header, Footer } = Layout;
 const { AuthorizedRoute, check } = Authorized;
 /**
@@ -86,7 +84,6 @@ enquireScreen(b => {
 
 class BasicLayout extends React.PureComponent {
 
-
   static childContextTypes = {
     location: PropTypes.object,
     breadcrumbNameMap: PropTypes.object,
@@ -95,7 +92,6 @@ class BasicLayout extends React.PureComponent {
   state = {
     isMobile,
   };
-
   getChildContext() {
     const { location, menuData } = this.props;
 
@@ -125,7 +121,6 @@ class BasicLayout extends React.PureComponent {
       };
       routerData[path] = router;
     });
-
     return {
       location,
       breadcrumbNameMap: getBreadcrumbNameMap(menuData, routerData),
@@ -138,8 +133,6 @@ class BasicLayout extends React.PureComponent {
     this.props.dispatch({
       type: 'menu/getUserMenuTree',
     });
-
-
     this.enquireHandler = enquireScreen(mobile => {
       this.setState({
         isMobile: mobile,
@@ -148,13 +141,10 @@ class BasicLayout extends React.PureComponent {
     this.props.dispatch({
       type: 'admin/queryUser',
     });
-
   }
-
   componentWillUnmount() {
     unenquireScreen(this.enquireHandler);
   }
-
   getPageTitle() {
     const {routerData, location} = this.props;
     const {pathname} = location;
@@ -171,7 +161,6 @@ class BasicLayout extends React.PureComponent {
     }
     return title;
   }
-
   getBaseRedirect = () => {
     // According to the url parameter to redirect
     // 这里是重定向的,重定向到 url 的 redirect 参数所示地址
@@ -224,7 +213,6 @@ class BasicLayout extends React.PureComponent {
       });
     }
   };
-
   render() {
     const {
       currentUser,
@@ -326,7 +314,6 @@ class BasicLayout extends React.PureComponent {
     );
   }
 }
-
 export default connect(({menu,admin, global, loading}) => ({
   menuData:getMenuData(menu.list),
   currentUser: admin.currentUser,

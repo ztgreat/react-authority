@@ -1,6 +1,5 @@
 import {stringify} from 'qs';
 import request from '../utils/request';
-import {getPlainNode} from "../utils/utils";
 
 /**
  * 根据用户获取菜单
@@ -13,7 +12,6 @@ export async function getUserMenuTree(payload) {
     body: {
     }
   });
-
 }
 
 /**

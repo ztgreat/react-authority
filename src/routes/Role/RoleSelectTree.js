@@ -1,9 +1,6 @@
 import React from 'react';
-import {message, Modal, TreeSelect,Form} from 'antd';
-
-
+import {Form, Modal, TreeSelect} from 'antd';
 const FormItem = Form.Item;
-
 @Form.create()
 export default  class RoleSelect extends React.Component {
 
@@ -12,9 +9,7 @@ export default  class RoleSelect extends React.Component {
    */
   handleSubmit = () => {
       this.props.handleSubmit(this.props.form.getFieldValue('selectRoleIds'));
-
   };
-
 
   /**
    * 隐藏弹窗
@@ -23,7 +18,6 @@ export default  class RoleSelect extends React.Component {
     this.props.form.resetFields();
     this.props.handleCloseModal();
   };
-
   treeProps = {
     // treeData:this.props.userRoles,
     // value: this.state.selectRoleIds,
@@ -35,8 +29,6 @@ export default  class RoleSelect extends React.Component {
       width: 360,
     },
   };
-
-
   render() {
     return (
       <div>
@@ -46,8 +38,9 @@ export default  class RoleSelect extends React.Component {
             onOk={this.handleSubmit}
             onCancel={this.handleCloseModal}
             destroyOnClose={true}
+            maskClosable={false}
+            confirmLoading={this.props.loading}
           >
-
             <FormItem labelCol={{span: 5}}wrapperCol={{span: 15}} label="角色选择">
 
               {this.props.form.getFieldDecorator('selectRoleIds', {
@@ -62,13 +55,10 @@ export default  class RoleSelect extends React.Component {
                   treeData={this.props.treeData}
                 />
               )}
-
             </FormItem>
-
           </Modal>
         </div>
     )
-
   };
 }
 

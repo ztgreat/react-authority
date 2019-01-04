@@ -51,32 +51,43 @@ export default {
     /**
      * 树型数据选中的key
      */
-    checkedKeys:[]
+    checkedKeys:[],
+
+    loading:false,
   },
   effects: {
-    * page({payload}, {call, put}) {
-      const response = yield call(page, payload);
-      if (!response) {
-        return;
-      }
+
+    *updateLoading({payload}, {call, put}){
       yield put({
-        type: 'save',
-        payload: response,
+        type: 'setLoading',
+        payload: payload,
       });
     },
-    * listAllUserRoles({payload}, {select,call, put}) {
 
-      const searchParam = yield select(({role}) => {
-        return ({search: payload.search||'', current: payload.current||1});
-      });
-      const response = yield call(listAllUserRoles, searchParam);
-      if (!response) {
-        return;
-      }
-      yield put({
-        type: 'save',
-        payload: response,
-      });
+    * page({payload}, {call, put}) {
+        const response = yield call(page, payload);
+        if (!response || response.code !='0') {
+          return false;
+        }
+        yield put({
+          type: 'save',
+          payload: response,
+        });
+        return true;
+    },
+    * listAllUserRoles({payload}, {select,call, put}) {
+        const searchParam = yield select(({role}) => {
+          return ({search: payload.search||'', current: payload.current||1});
+        });
+        const response = yield call(listAllUserRoles, searchParam);
+        if (!response || response.code !='0') {
+          return false;
+        }
+        yield put({
+          type: 'save',
+          payload: response,
+        });
+        return true;
     },
     /**
      * 查询单个用户角色信息
@@ -86,14 +97,15 @@ export default {
      * @returns {IterableIterator<*>}
      */
     * querySingleUserRole({payload}, {call, put}) {
-      const response = yield call(querySingleUserRole, payload);
-      if (!response) {
-        return;
-      }
-      yield put({
-        type: 'saveUserRoles',
-        payload: response,
-      });
+        const response = yield call(querySingleUserRole, payload);
+        if (!response || response.code !='0') {
+          return false;
+        }
+        yield put({
+          type: 'saveUserRoles',
+          payload: response,
+        });
+        return true;
 
     },
 
@@ -105,10 +117,11 @@ export default {
      * @returns {IterableIterator<*>}
      */
     * updateUserRoles({payload}, {call, put}) {
-      const response = yield call(updateUserRoles, payload);
-      if (!response) {
-
-      }
+        const response = yield call(updateUserRoles, payload);
+        if (!response || response.code !='0') {
+          return false;
+        }
+        return true;
     },
 
     /**
@@ -119,27 +132,25 @@ export default {
      * @returns {IterableIterator<*>}
      */
     * saveOrUpdate({payload}, {call, put}) {
-      const response = yield call(saveOrUpdate, payload);
-      if (!response) {
-          return;
-      }
-      if(response.code=='0'){
+        const response = yield call(saveOrUpdate, payload);
+        if (!response || response.code !='0') {
+          return false;
+        }
         yield put({
           type: 'closeModal',
           payload: {
             modalType: 'role'
           },
         });
-      }
+        return true;
     },
     * delete({payload}, {call, put}) {
-      const response = yield call(deleteRole, payload);
-      if (!response) {
-
-      }
+        const response = yield call(deleteRole, payload);
+        if (!response || response.code !='0') {
+          return false;
+        }
+        return true;
     },
-
-
 
     /**
      * 更新角色菜单树
@@ -150,14 +161,15 @@ export default {
      */
     *updateMenus({payload}, {select,call, put}) {
 
-      const param = yield select(({role}) => {
-        return ({roleId: role.roleItem.id||0, menusIds: payload.menusIds});
-      });
+        const param = yield select(({role}) => {
+          return ({roleId: role.roleItem.id||0, menusIds: payload.menusIds});
+        });
 
-      const response = yield call(updateMenus, param);
-      if (!response) {
-
-      }
+        const response = yield call(updateMenus, param);
+        if (!response || response.code !='0') {
+          return false;
+        }
+        return true;
     },
 
     /**
@@ -169,14 +181,14 @@ export default {
      */
     * updatePermission({payload}, {select,call, put}) {
 
-      const param = yield select(({role}) => {
-        return ({roleId: role.roleItem.id||0, permissionIds: payload.permissionIds});
-      });
-
-      const response = yield call(updatePermission, param);
-      if (!response) {
-
-      }
+        const param = yield select(({role}) => {
+          return ({roleId: role.roleItem.id||0, permissionIds: payload.permissionIds});
+        });
+        const response = yield call(updatePermission, param);
+        if (!response || response.code !='0') {
+          return false;
+        }
+        return true;
     },
     /**
      * 角色编辑
@@ -186,16 +198,16 @@ export default {
      * @returns {IterableIterator<*>}
      */
     *openEdit({payload}, {call, put}) {
-      yield put({
-        type: 'setRoleEdit',
-        payload: payload,
-      });
-      yield put({
-        type: 'showModal',
-        payload: {
-          modalType: 'role'
-        },
-      });
+        yield put({
+          type: 'setRoleEdit',
+          payload: payload,
+        });
+        yield put({
+          type: 'showModal',
+          payload: {
+            modalType: 'role'
+          },
+        });
     },
 
 
@@ -210,8 +222,8 @@ export default {
 
         const response = yield call(getMenuTreeByRoleId, {roleId:payload.record.id});
 
-        if (!response) {
-          return;
+        if (!response || response.code !='0') {
+          return false;
         }
         yield put({
           type: 'saveRoleMenu',
@@ -228,6 +240,7 @@ export default {
             modalType: 'authMenu'
           },
         });
+        return true;
     },
 
 
@@ -241,9 +254,8 @@ export default {
       *showModalRolePermission({payload}, {call, put}) {
 
           const response = yield call(getPermissionTreeByRoleId, {roleId:payload.record.id});
-
-          if (!response) {
-            return;
+          if (!response || response.code !='0') {
+            return false;
           }
           yield put({
             type: 'saveRolePermission',
@@ -260,7 +272,8 @@ export default {
               modalType: 'authPermission'
             },
           });
-        },
+          return true;
+     },
 
     *updateCheckedKeys({payload},{call, put}) {
         yield put({
@@ -272,6 +285,12 @@ export default {
   },
 
   reducers: {
+    setLoading(state, action){
+      return {
+        ...state,
+        loading: action.payload,
+      };
+    },
     save(state, action) {
       return {
         ...state,

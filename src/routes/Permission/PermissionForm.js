@@ -1,28 +1,21 @@
 import React from 'react';
-import {Form, Input, InputNumber, Modal, Select, Switch,} from 'antd';
-
+import {Form, Input, Modal, Select, Switch,} from 'antd';
 const FormItem = Form.Item;
 const {Option} = Select;
-
 @Form.create()
 export default class PermissionForm extends React.PureComponent {
-
 
   okHandle = () => {
     this.props.form.validateFields((err, fieldsValue) => {
       if (err) return;
-
-
       if (fieldsValue['level'] == 0) {
         fieldsValue['parentId'] = 0;
       }
-
       if (fieldsValue['status']) {
         fieldsValue['status'] = '1';
       }else {
         fieldsValue['status'] = '0';
       }
-
       this.props.handleSubmit(fieldsValue);
     });
   };
@@ -31,8 +24,6 @@ export default class PermissionForm extends React.PureComponent {
     this.props.form.resetFields();
     this.props.handleCloseModal();
   };
-
-
   showParentPermission = () => {
     if (this.props.form.getFieldValue('level')=='1') {
       return (
@@ -56,12 +47,7 @@ export default class PermissionForm extends React.PureComponent {
               })}
 
             </Select>
-
-
           )}
-
-
-
         </FormItem>
       );
     }
@@ -69,8 +55,6 @@ export default class PermissionForm extends React.PureComponent {
       <div></div>
     );
   };
-
-
   render() {
 
     return (
@@ -80,6 +64,8 @@ export default class PermissionForm extends React.PureComponent {
         onOk={this.okHandle}
         onCancel={this.handleCloseModal}
         destroyOnClose={true}
+        maskClosable={false}
+        confirmLoading={this.props.loading}
       >
         <FormItem required labelCol={{span: 5}} wrapperCol={{span: 15}} label="权限层级">
           {this.props.form.getFieldDecorator('level', {
@@ -94,12 +80,9 @@ export default class PermissionForm extends React.PureComponent {
             <Option value={0}>一级权限</Option>
             <Option value={1}>二级权限</Option>
           </Select>)}
-
-
         </FormItem>
 
         {this.showParentPermission()}
-
 
         <FormItem labelCol={{span: 5}} wrapperCol={{span: 15}} label="权限名称">
           {this.props.form.getFieldDecorator('name', {
@@ -138,12 +121,8 @@ export default class PermissionForm extends React.PureComponent {
 
             <Switch checkedChildren="启用"
                   unCheckedChildren="禁用"/>
-
           )}
-
-
         </FormItem>
-
       </Modal>
     );
   }

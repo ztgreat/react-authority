@@ -1,12 +1,10 @@
 import React from 'react';
-import {Form, Input, Modal, Select, Switch,} from 'antd';
+import {Form, Input, Modal, Switch,} from 'antd';
 
 const FormItem = Form.Item;
 
 @Form.create()
 export default class AdminForm extends React.PureComponent {
-
-
   okHandle = () => {
     this.props.form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -18,16 +16,13 @@ export default class AdminForm extends React.PureComponent {
       this.props.handleSubmit(fieldsValue);
     });
   };
-
   handleCloseModal = () => {
     this.props.form.resetFields();
     this.props.handleCloseModal();
   };
-
   showMoreInfo = (modalVisible) => {
     if (modalVisible && !this.props.record.id) {
       return (
-
         <FormItem required labelCol={{span: 5}} wrapperCol={{span: 15}} label="密码">
           {this.props.form.getFieldDecorator('password', {
             initialValue: this.props.record.password || '',
@@ -36,15 +31,12 @@ export default class AdminForm extends React.PureComponent {
             <Input  type='password' placeholder="密码" style={{width: 300}}/>
           )}
         </FormItem>
-
       );
     }
     return (
       <div></div>
     );
   };
-
-
   render() {
     const {title} = this.props;
     return (
@@ -54,9 +46,9 @@ export default class AdminForm extends React.PureComponent {
         onOk={this.okHandle}
         onCancel={this.handleCloseModal}
         destroyOnClose={true}
+        maskClosable={false}
+        confirmLoading={this.props.loading}
       >
-
-
         <FormItem required labelCol={{span: 5}} wrapperCol={{span: 15}} label="用户名">
           {this.props.form.getFieldDecorator('username', {
             initialValue: this.props.record.username || '',
@@ -84,7 +76,6 @@ export default class AdminForm extends React.PureComponent {
           )}
         </FormItem>
 
-
         <FormItem required labelCol={{span: 5}} wrapperCol={{span: 15}} label="手机号">
           {this.props.form.getFieldDecorator('telephone', {
             initialValue: this.props.record.telephone || '',
@@ -94,9 +85,7 @@ export default class AdminForm extends React.PureComponent {
           )}
         </FormItem>
 
-
         {this.showMoreInfo(this.props.modalVisible)}
-
 
         <FormItem required labelCol={{span: 5}} wrapperCol={{span: 15}} label="状态">
 
@@ -108,13 +97,8 @@ export default class AdminForm extends React.PureComponent {
             <Switch checkedChildren="启用"
                     unCheckedChildren="禁用"/>
           )}
-
-
         </FormItem>
-
       </Modal>
     );
   }
 };
-
-

@@ -18,15 +18,12 @@ export default class OauthAuthorize extends Component{
   state = {
     autoLogin: true,
   };
-
   componentDidMount() {
     //校验是否登录
     const {dispatch,login:{status}} = this.props;
 
     if(!status){
       //未登录则进行登录
-
-
     }else{
       //进行授权页面
       let url = this.props.location.search;
@@ -38,7 +35,6 @@ export default class OauthAuthorize extends Component{
       });
     }
   }
-
   renderLogin=()=>{
     const { login, submitting } = this.props;
     const { type } = this.state;
@@ -65,10 +61,7 @@ export default class OauthAuthorize extends Component{
         </Link>
       </div>
     </Login>)
-
   }
-
-
   renderAuthorize=()=>{
     const { login, submitting } = this.props;
     const { type } = this.state;
@@ -80,9 +73,7 @@ export default class OauthAuthorize extends Component{
         <Submit loading={submitting}>授权</Submit>
       </Login>
       )
-
   }
-
   renderLoginOrOauth=(status)=>{
 
     if(status){
@@ -90,11 +81,7 @@ export default class OauthAuthorize extends Component{
     }else{
       return this.renderLogin();
     }
-
   }
-
-
-
   handleSubmit = (err, values) => {
     if (!err) {
       this.props.dispatch({
@@ -111,11 +98,9 @@ export default class OauthAuthorize extends Component{
       autoLogin: e.target.checked,
     });
   };
-
   renderMessage = content => {
     return <Alert style={{ marginBottom: 24 }} message={content} type="error" showIcon />;
   };
-
   render() {
     const { login:{status}} = this.props;
     return (
@@ -126,5 +111,4 @@ export default class OauthAuthorize extends Component{
       </div>
     );
   }
-
 }

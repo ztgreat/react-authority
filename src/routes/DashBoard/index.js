@@ -10,13 +10,9 @@ import PageHeaderLayout from '../../layouts/PageHeaderLayout';
   admin,
   loading: loading.models.admin,
 }))
-
 @Form.create()
-
 export default class Chat extends PureComponent {
   state = {};
-
-
   render() {
     const {admin: {currentUser}, loading} = this.props;
     return (
@@ -42,5 +38,4 @@ export default class Chat extends PureComponent {
       </PageHeaderLayout>
     )
   }
-
 }

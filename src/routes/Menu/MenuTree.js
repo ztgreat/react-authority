@@ -1,10 +1,8 @@
 import React from 'react';
-import {Modal,Tree,Input } from 'antd';
-
+import {Input, Modal, Tree} from 'antd';
 const TreeNode = Tree.TreeNode;
 const Search = Input.Search;
-export default class PermissionTree extends React.PureComponent {
-
+export default class MenuTree extends React.PureComponent {
 
   state = {
     /**
@@ -21,7 +19,6 @@ export default class PermissionTree extends React.PureComponent {
     searchValue: '',
   };
 
-
   /**
    * 展开回调
    * @param expandedKeys
@@ -35,12 +32,9 @@ export default class PermissionTree extends React.PureComponent {
     });
   };
 
-
-
   okHandle = () => {
-    this.props.handleSubmit();
+      this.props.handleSubmit();
   };
-
   handleCloseModal = () => {
     this.setState({
       expandedKeys:[],
@@ -48,11 +42,9 @@ export default class PermissionTree extends React.PureComponent {
     });
     this.props.handleCloseModal();
   };
-
   onCheck = (checkedKeys) => {
-    this.props.onCheck(checkedKeys);
+    this.props.onCheck(checkedKeys.checked);
   };
-
   renderTreeNodes = (data) => data.map((item) => {
     const index = item.title.indexOf(this.state.searchValue);
     const beforeStr = item.title.substr(0, index);
@@ -73,8 +65,6 @@ export default class PermissionTree extends React.PureComponent {
     }
     return <TreeNode key={item.key} title={title} />;
   });
-
-
   getParentKey = (tree,value) => {
     for (let i = 0; i < tree.length; i++) {
       const node = tree[i];
@@ -84,7 +74,6 @@ export default class PermissionTree extends React.PureComponent {
     }
     return false;
   };
-
   onChangeSearch = (e) => {
     const value = e.target.value;
     const expandedKeys = this.props.treeData.map((item) => {
@@ -104,30 +93,30 @@ export default class PermissionTree extends React.PureComponent {
       autoExpandParent: true,
     });
   };
-
-
   render() {
     return (
       <Modal
-        title="资源授权"
+        title="菜单授权"
         visible={this.props.modalVisible}
         onOk={this.okHandle}
         onCancel={this.handleCloseModal}
         destroyOnClose={true}
+        maskClosable={false}
+        confirmLoading={this.props.loading}
       >
         <Search value ={this.state.searchValue} style={{ marginBottom: 8 }} placeholder="Search" onChange={this.onChangeSearch} />
         <Tree
           checkable
+          checkStrictly={true}
           onExpand={this.onExpand}
           expandedKeys={this.state.expandedKeys}
-          onCheck={this.props.onCheck}
+          onCheck={this.onCheck}
           checkedKeys={this.props.checkedKeys}
           autoExpandParent={this.state.autoExpandParent}
         >
           {this.renderTreeNodes(this.props.treeData)}
 
         </Tree>
-
       </Modal>
     );
   };

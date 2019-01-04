@@ -18,5 +18,4 @@ function formatter(data=[], parentPath = '/', parentAuthority) {
     return result;
   });
 }
-
 export const getMenuData = (menuData) => formatter(menuData);

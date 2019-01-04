@@ -12,7 +12,6 @@ export async function page(payload) {
     body: {
     }
   });
-
 }
 
 /**
@@ -25,7 +24,6 @@ export async function listAllUserRoles(payload) {
     method: 'GET',
     body: payload
   });
-
 }
 /**
  * 获取某个用户角色信息
@@ -39,7 +37,6 @@ export async function querySingleUserRole(payload) {
 
     }
   });
-
 }
 
 /**
@@ -54,9 +51,6 @@ export async function updateUserRoles(payload) {
   });
 
 }
-
-
-
 
 /**
  * 获取当前用户信息

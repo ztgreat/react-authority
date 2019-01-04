@@ -3,39 +3,32 @@ import {connect} from 'dva';
 import {Badge, Button, Card, Divider, Form, message, Modal, Select,} from 'antd';
 import StandardTable from '../../components/StandardTable';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-import MenuForm from '../../components/Menu/MenuForm';
+import MenuForm from './MenuForm';
 
 import styles from '../TableList.less';
-
 const statusMap = ['default', 'success'];
 const status = ['不可用', '可用'];
-
-
 @connect(({menu, loading}) => ({
   menu,
   loading: loading.models.menu,
 }))
 
-
 export default class MenuList extends PureComponent {
   state = {
     selectedRows: [],
   };
-
   componentDidMount() {
     const {dispatch} = this.props;
     dispatch({
       type: 'menu/getMenuTree',
     });
   }
-
   refush =()=>{
     const {dispatch} = this.props;
     dispatch({
       type: 'menu/getMenuTree',
     });
   };
-
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const {dispatch} = this.props;
     const params = {
@@ -47,9 +40,7 @@ export default class MenuList extends PureComponent {
       payload: params,
     });
   };
-
   showDeleteConfirm = (record) => {
-
     const confirm = Modal.confirm;
     const self = this;
     confirm({
@@ -69,13 +60,10 @@ export default class MenuList extends PureComponent {
       },
     });
   };
-
   handleBatchDelete = () => {
     const {dispatch} = this.props;
     const {selectedRows} = this.state;
     if (!selectedRows) return;
-
-
     for (var row of selectedRows) {
       if (row.isParent == true) {
         message.error('需要先删除子菜单');
@@ -95,8 +83,6 @@ export default class MenuList extends PureComponent {
   handleDelete = (record) => {
     const {dispatch} = this.props;
     if (!record) return;
-
-
     if (record.isParent == true) {
       message.error('需要先删除子菜单');
       return;
@@ -118,7 +104,6 @@ export default class MenuList extends PureComponent {
     });
   };
 
-
   /**
    * 提交 添加的菜单
    * @param e
@@ -126,16 +111,23 @@ export default class MenuList extends PureComponent {
   handleSubmitMenu = values => {
     const {dispatch,menu: {menuItem}} = this.props;
     values['id'] = menuItem.id;
-    console.log('formvalue', values);
+    //更新按钮状态
+    dispatch({
+      type: 'menu/updateLoading',
+      payload: true,
+    })
     dispatch({
       type: 'menu/saveOrUpdate',
       payload: values,
     }).then(()=>{
+      //更新按钮状态
+      dispatch({
+        type: 'menu/updateLoading',
+        payload: false,
+      })
       this.refush();
     });
   };
-
-
 
   /**
    * 弹窗控制
@@ -148,8 +140,6 @@ export default class MenuList extends PureComponent {
       type: 'menu/openMenuForm',
       payload: record,
     })
-
-
   };
 
   handleCloseModal = () => {
@@ -157,11 +147,10 @@ export default class MenuList extends PureComponent {
     dispatch({
       type: 'menu/closeMenuForm',
     })
-
   };
 
   render() {
-    const {menu: {menuTree,menuFormModalVisible,menuItem}, loading} = this.props;
+    const {menu: {menuTree,menuFormModalVisible,menuItem,loading}} = this.props;
     const {selectedRows} = this.state;
     const columns = [
       /*{
@@ -212,8 +201,6 @@ export default class MenuList extends PureComponent {
         ),
       },
     ];
-
-
     return (
       <PageHeaderLayout title="菜单管理">
         <Card bordered={false}>
@@ -231,7 +218,7 @@ export default class MenuList extends PureComponent {
             </div>
             <StandardTable
               selectedRows={selectedRows}
-              loading={loading}
+              loading={this.props.loading}
               data={menuTree}
               rowKey="id"
               columns={columns}
@@ -241,7 +228,9 @@ export default class MenuList extends PureComponent {
             />
           </div>
         </Card>
-        <MenuForm record={menuItem} modalVisible={menuFormModalVisible}
+        <MenuForm record={menuItem}
+                  modalVisible={menuFormModalVisible}
+                  loading={loading}
                   handleSubmit={this.handleSubmitMenu}
                   handleCloseModal={this.handleCloseModal} menus={menuTree.list}/>
       </PageHeaderLayout>

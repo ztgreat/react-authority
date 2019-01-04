@@ -15,35 +15,42 @@ export default {
     parentPermission:[],
     permissionFormModalVisible:false,
     permissionItem:{},
+    loading:false,
   },
 
   effects: {
-    * getPermissionTree({payload}, {select,call, put}) {
 
-      const searchParam = yield select(({permission}) => {
-        return ({current: payload.current||1});
-      });
-      const response = yield call(getPermissionTree,searchParam);
-      if (!response) {
-        return;
-      }
+    *updateLoading({payload}, {call, put}){
       yield put({
-        type: 'saveAll',
-        payload: response,
+        type: 'setLoading',
+        payload: payload,
       });
+    },
+    * getPermissionTree({payload}, {select,call, put}) {
+        const searchParam = yield select(({permission}) => {
+          return ({current: payload.current||1});
+        });
+        const response = yield call(getPermissionTree,searchParam);
+        if (!response || response.code !='0') {
+          return false;
+        }
+        yield put({
+          type: 'saveAll',
+          payload: response,
+        });
+        return true;
     },
     * getPermissionByParentId({payload}, {select,call, put}) {
-
-      const response = yield call(getPermissionByParentId,payload);
-      if (!response) {
-        return;
-      }
-      yield put({
-        type: 'setParentPermission',
-        payload: response,
-      });
+        const response = yield call(getPermissionByParentId,payload);
+        if (!response || response.code !='0') {
+          return false;
+        }
+        yield put({
+          type: 'setParentPermission',
+          payload: response,
+        });
+        return true;
     },
-
 
     /**
      * 打开permission 弹窗
@@ -53,53 +60,51 @@ export default {
      * @returns {IterableIterator<*>}
      */
       *openPermissionForm({payload}, {call, put}) {
-      yield put({
-        type: 'setPermissionItem',
-        payload: payload,
-      });
-      yield put({
-        type: 'setPermissionFormModalVisible',
-        payload: true,
-      });
+          yield put({
+            type: 'setPermissionItem',
+            payload: payload,
+          });
+          yield put({
+            type: 'setPermissionFormModalVisible',
+            payload: true,
+          });
     },
-
     *closePermissionForm({payload}, {call, put}) {
-      yield put({
-        type: 'setPermissionFormModalVisible',
-        payload: false,
-      });
+        yield put({
+          type: 'setPermissionFormModalVisible',
+          payload: false,
+        });
     },
-
-
-
-
     * saveOrUpdate({payload}, {call, put}) {
-      const response = yield call(saveOrUpdate, payload);
-      if (!response) {
-          return;
-      }
-      if(response.code=='0'){
+        const response = yield call(saveOrUpdate, payload);
+        if (!response || response.code !='0') {
+          return false;
+        }
         yield put({
           type:"closePermissionForm"
         })
-
-      }
+        return true;
     },
     * delete({payload}, {call, put}) {
-      const response = yield call(deleteBatch, payload);
-      if (!response) {
-
-      }
+        const response = yield call(deleteBatch, payload);
+        if (!response || response.code !='0') {
+          return false;
+        }
+        return true
     },
-
   },
 
   reducers: {
+    setLoading(state, action){
+      return {
+        ...state,
+        loading: action.payload,
+      };
+    },
     save(state, action) {
       return {
         ...state,
         list: action.payload,
-
       };
     },
     saveAll(state, action) {
@@ -113,31 +118,24 @@ export default {
         },
       };
     },
-
     setParentPermission(state, action) {
       return {
         ...state,
         parentPermission: action.payload.data,
       };
     },
-
     setPermissionItem(state, action) {
       return {
         ...state,
         permissionItem: action.payload
       };
     },
-
-
     setPermissionFormModalVisible(state, action) {
       return {
         ...state,
         permissionFormModalVisible: action.payload
       };
     },
-
-
-
   },
 
 };
