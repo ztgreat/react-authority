@@ -228,10 +228,7 @@ export default class RoleAllocation extends PureComponent {
         title: '操作',
         render: (record) => (
           <Fragment>
-
             <a onClick={()=>this.roleSelectShowModal(record)}>分配角色</a>
-
-
           </Fragment>
         ),
       },
