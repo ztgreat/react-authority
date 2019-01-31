@@ -1,4 +1,5 @@
 import {deleteBatch, getMenuTree, getUserMenuTree, saveOrUpdate} from '../services/menu';
+
 export default {
   namespace: 'menu',
   state: {

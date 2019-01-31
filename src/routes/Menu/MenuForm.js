@@ -1,5 +1,6 @@
 import React from 'react';
 import {Form, Input, InputNumber, Modal, Select, Switch,} from 'antd';
+
 const FormItem = Form.Item;
 const {Option} = Select;
 @Form.create()

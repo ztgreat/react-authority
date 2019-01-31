@@ -2,8 +2,8 @@ import {
   deleteRole,
   getMenuTreeByRoleId,
   getPermissionTreeByRoleId,
-  listAllUserRoles,
   page,
+  pageUserRoles,
   querySingleUserRole,
   saveOrUpdate,
   updateMenus,
@@ -17,7 +17,7 @@ export default {
 
   state: {
     //角色数据源
-    data: {
+    pageData: {
       list: [],
       pagination: {
         pageSize: 10,
@@ -70,21 +70,18 @@ export default {
           return false;
         }
         yield put({
-          type: 'save',
+          type: 'savePageData',
           payload: response,
         });
         return true;
     },
-    * listAllUserRoles({payload}, {select,call, put}) {
-        const searchParam = yield select(({role}) => {
-          return ({search: payload.search||'', current: payload.current||1});
-        });
-        const response = yield call(listAllUserRoles, searchParam);
+    * pageUserRoles({payload}, {select,call, put}) {
+        const response = yield call(pageUserRoles,payload);
         if (!response || response.code !='0') {
           return false;
         }
         yield put({
-          type: 'save',
+          type: 'savePageData',
           payload: response,
         });
         return true;
@@ -291,13 +288,15 @@ export default {
         loading: action.payload,
       };
     },
-    save(state, action) {
+    savePageData(state, action) {
       return {
         ...state,
-        data: {
+        pageData: {
           list: action.payload.data,
           pagination: {
-            total: action.payload.count,
+            current:action.payload.current,
+            pageSize:action.payload.pageSize,
+            total:action.payload.total,
           }
         },
       };

@@ -1,12 +1,13 @@
 import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'dva';
-import {Badge, Button, Card, Divider, Form, Modal, Select,} from 'antd';
+import {Badge, Button, Card, Divider, Form, Modal,} from 'antd';
 import StandardTable from '../../components/StandardTable';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import RoleForm from './RoleForm';
 import MenuTree from '../Menu/MenuTree';
 import PermissionTree from '../Permission/PermissionTree';
 import styles from '../TableList.less';
+
 const statusMap = ['default', 'success'];
 const status = ['不可用', '可用'];
 @connect(({role, loading}) => ({
@@ -17,19 +18,41 @@ const status = ['不可用', '可用'];
 export default class RoleList extends PureComponent {
   state = {
     selectedRows: [],
+    // 搜索条件字段
+    searchFields: {
+    },
+    page:{
+      //当前页数
+      current:1,
+      //每页大小
+      pageSize:20,
+    },
   };
   componentDidMount() {
     const {dispatch} = this.props;
     dispatch({
       type: 'role/page',
+      payload:{...this.state.searchFields,...this.state.page}
     });
   }
   refush =()=>{
     const {dispatch} = this.props;
     dispatch({
       type: 'role/page',
+      payload:{...this.state.searchFields,...this.state.page}
     });
   };
+
+  handleStandardTableChange = (pagination, filtersArg, sorter) => {
+    this.setState({
+      page:{
+        current:pagination.current,
+        pageSize:pagination.pageSize,
+      }
+    },this.refush)
+
+  };
+
   //批量刪除显示
   showDeleteConfirm = (record) => {
     const confirm = Modal.confirm;
@@ -221,7 +244,7 @@ export default class RoleList extends PureComponent {
 
 
   render() {
-    const {role: {data, roleMenu, rolePermission, roleFormModalVisible,
+    const {role: {pageData, roleMenu, rolePermission, roleFormModalVisible,
       roleItem, permissionAuthModalVisible, menuAuthModalVisible,roleFormOption,checkedKeys,loading} } = this.props;
     const {selectedRows} = this.state;
     const columns = [
@@ -288,7 +311,7 @@ export default class RoleList extends PureComponent {
               selectedRows={selectedRows}
               loading={this.props.loading}
               hiddenCheck={true}
-              data={data}
+              data={pageData}
               rowKey="id"
               columns={columns}
               onSelectRow={this.handleSelectRows}

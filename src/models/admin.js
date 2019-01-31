@@ -1,5 +1,6 @@
-import {list,deleteAdmin,saveOrUpdate,queryUser} from "../services/admin";
+import {deleteAdmin, list, queryUser, saveOrUpdate} from "../services/admin";
 import {setAuthority} from '../utils/authority';
+
 export default {
   namespace: 'admin',
 
@@ -9,7 +10,7 @@ export default {
       username: '',
     },
 
-    adminPageData:{
+    pageData:{
       list: [],
       pagination:{
         pageSize:10,
@@ -57,10 +58,7 @@ export default {
      */
       *list({payload}, {select,call, put}) {
 
-          const param = () => {
-            return ({search: payload.search||'', status: payload.status||''});
-          };
-          const response = yield call(list, param());
+          const response = yield call(list, payload);
           if (!response || response.code !='0') {
             return false;
           }
@@ -129,10 +127,12 @@ export default {
     savePageData(state, action) {
       return {
         ...state,
-        adminPageData: {
+        pageData: {
           list: action.payload.data,
           pagination:{
-            total:action.payload.count,
+            current:action.payload.current,
+            pageSize:action.payload.pageSize,
+            total:action.payload.total,
           }
         },
       };

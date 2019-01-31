@@ -1,5 +1,6 @@
 import React from 'react';
 import {Input, Modal, Tree} from 'antd';
+
 const TreeNode = Tree.TreeNode;
 const Search = Input.Search;
 export default class MenuTree extends React.PureComponent {

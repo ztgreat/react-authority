@@ -1,6 +1,6 @@
 import {routerRedux} from 'dva/router';
 import {setAuthority} from '../utils/authority';
-import {login, logout,oauth} from '../services/admin';
+import {login, logout, oauth} from '../services/admin';
 import {reloadAuthorized} from '../utils/Authorized';
 
 export default {

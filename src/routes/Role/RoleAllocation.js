@@ -19,7 +19,13 @@ export default class RoleAllocation extends PureComponent {
     selectedRows: [],
     // 搜索条件字段
     searchFields: {
-      search: '',
+      search:'',
+    },
+    page:{
+      //当前页数
+      current:1,
+      //每页大小
+      pageSize:20,
     },
     userId:null,
   };
@@ -27,19 +33,25 @@ export default class RoleAllocation extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'role/listAllUserRoles',
-      payload:{}
+      type: 'role/pageUserRoles',
+      payload:{...this.state.searchFields,...this.state.page}
     });
   }
-  handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const {dispatch} = this.props;
+  refush =()=>{
+    const { dispatch } = this.props;
     dispatch({
-      type: 'role/listAllUserRoles',
-      payload: {
-        ...this.state.searchFields,
-        current: pagination.current,
-      },
+      type: 'role/pageUserRoles',
+      payload:{...this.state.searchFields,...this.state.page}
     });
+  };
+
+  handleStandardTableChange = (pagination, filtersArg, sorter) => {
+    this.setState({
+      page:{
+        current:pagination.current,
+        pageSize:pagination.pageSize,
+      }
+    },this.refush)
   };
 
   /**
@@ -48,17 +60,13 @@ export default class RoleAllocation extends PureComponent {
    */
   handleSearch = e => {
     e.preventDefault();
-    const { dispatch, form } = this.props;
+    const {form } = this.props;
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       this.setState({
         searchFields: fieldsValue,
-        current: 1,
-      });
-      dispatch({
-        type: 'role/listAllUserRoles',
-        payload: fieldsValue,
-      });
+        page:{...this.state.page,current: 1},
+      },this.refush);
     });
   };
 
@@ -67,17 +75,13 @@ export default class RoleAllocation extends PureComponent {
    * 搜索条件清空 handler
    */
   handleSearchFormReset = () => {
-    const { form, dispatch } = this.props;
+    const { form} = this.props;
     form.resetFields();
     this.setState({
       searchFields: {
-        search: '',
       },
-    });
-    dispatch({
-      type: 'role/listAllUserRoles',
-      payload:{}
-    });
+      page:{...this.state.page,current: 1},
+    },this.refush);
   };
 
   showDeleteConfirm=()=> {
@@ -185,7 +189,7 @@ export default class RoleAllocation extends PureComponent {
   }
 
   render() {
-    const { role: { data },role:{ userRoles },loading } = this.props;
+    const { role: { pageData },role:{ userRoles },loading } = this.props;
     const { selectedRows } = this.state;
     const columns = [
       /*{
@@ -262,7 +266,7 @@ export default class RoleAllocation extends PureComponent {
               selectedRows={selectedRows}
               hiddenCheck={true}
               loading={loading}
-              data={data}
+              data={pageData}
               rowKey="id"
               columns={columns}
               onSelectRow={this.handleSelectRows}

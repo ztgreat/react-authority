@@ -1,5 +1,5 @@
 import React from 'react';
-import {Modal,Tree,Input } from 'antd';
+import {Input, Modal, Tree} from 'antd';
 
 const TreeNode = Tree.TreeNode;
 const Search = Input.Search;

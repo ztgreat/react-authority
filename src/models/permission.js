@@ -1,11 +1,11 @@
-import {deleteBatch, getPermissionByParentId, getPermissionTree, saveOrUpdate} from '../services/permission';
+import {deleteBatch, getPermissionByParentId, page, saveOrUpdate} from '../services/permission';
 
 export default {
   namespace: 'permission',
 
   state: {
     list: [],
-    permissionTree: {
+    pageData: {
       list: [],
       pagination:{
         pageSize:10,
@@ -26,16 +26,13 @@ export default {
         payload: payload,
       });
     },
-    * getPermissionTree({payload}, {select,call, put}) {
-        const searchParam = yield select(({permission}) => {
-          return ({current: payload.current||1});
-        });
-        const response = yield call(getPermissionTree,searchParam);
+    * page({payload}, {select,call, put}) {
+        const response = yield call(page,payload);
         if (!response || response.code !='0') {
           return false;
         }
         yield put({
-          type: 'saveAll',
+          type: 'savePageData',
           payload: response,
         });
         return true;
@@ -107,13 +104,15 @@ export default {
         list: action.payload,
       };
     },
-    saveAll(state, action) {
+    savePageData(state, action) {
       return {
         ...state,
-        permissionTree: {
+        pageData: {
           list: action.payload.data,
           pagination:{
-            total:action.payload.count,
+            current:action.payload.current,
+            pageSize:action.payload.pageSize,
+            total:action.payload.total,
           }
         },
       };

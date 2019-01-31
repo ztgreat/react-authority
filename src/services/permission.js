@@ -7,8 +7,8 @@ import {getPlainNode} from "../utils/utils";
  * 全部权限树
  * @returns {Promise<Object>}
  */
-export async function getPermissionTree(payload) {
-  return request(`/api/permission/getPermissionTree`, {
+export async function page(payload) {
+  return request(`/api/permission/page`, {
     method: 'GET',
     body: payload
   });

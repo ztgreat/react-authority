@@ -15,6 +15,15 @@ const status = ['不可用', '可用'];
 export default class PermissionList extends PureComponent {
   state = {
     selectedRows: [],
+    // 搜索条件字段
+    searchFields: {
+    },
+    page:{
+      //当前页数
+      current:1,
+      //每页大小
+      pageSize:20,
+    },
     record: {},
   };
   componentDidMount() {
@@ -23,8 +32,8 @@ export default class PermissionList extends PureComponent {
     }
       = this.props;
     dispatch({
-      type: 'permission/getPermissionTree',
-      payload: {},
+      type: 'permission/page',
+      payload:{...this.state.searchFields,...this.state.page}
     });
     dispatch({
       type: 'permission/getPermissionByParentId',
@@ -35,20 +44,18 @@ export default class PermissionList extends PureComponent {
   refush =()=>{
     const {dispatch} = this.props;
     dispatch({
-      type: 'permission/getPermissionTree',
-      payload: {},
+      type: 'permission/page',
+      payload:{...this.state.searchFields,...this.state.page}
     });
   };
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const {dispatch} = this.props;
-    const params = {
-      current: pagination.current,
-    };
-    dispatch({
-      type: 'permission/getPermissionTree',
-      payload: params,
-    });
+    this.setState({
+      page:{
+        current:pagination.current,
+        pageSize:pagination.pageSize,
+      }
+    },this.refush)
   };
   showDeleteConfirm = (record) => {
     const confirm = Modal.confirm;
@@ -170,7 +177,7 @@ export default class PermissionList extends PureComponent {
   };
 
   render() {
-    const {permission: {permissionTree,parentPermission,permissionFormModalVisible,permissionItem,loading}} = this.props;
+    const {permission: {pageData,parentPermission,permissionFormModalVisible,permissionItem,loading}} = this.props;
     const {selectedRows} = this.state;
     const columns = [
       /*{
@@ -241,7 +248,7 @@ export default class PermissionList extends PureComponent {
             <StandardTable
               selectedRows={selectedRows}
               loading={loading}
-              data={permissionTree}
+              data={pageData}
               rowKey="id"
               columns={columns}
               onSelectRow={this.handleSelectRows}

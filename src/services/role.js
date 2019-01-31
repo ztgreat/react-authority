@@ -9,8 +9,7 @@ import request from '../utils/request';
 export async function page(payload) {
   return request(`/api/role/page`, {
     method: 'GET',
-    body: {
-    }
+    body: payload
   });
 }
 
@@ -19,8 +18,8 @@ export async function page(payload) {
  * @param payload
  * @returns {Promise<Object>}
  */
-export async function listAllUserRoles(payload) {
-  return request(`/api/role/listAllUserRoles`, {
+export async function pageUserRoles(payload) {
+  return request(`/api/role/pageUserRoles`, {
     method: 'GET',
     body: payload
   });
@@ -33,9 +32,7 @@ export async function listAllUserRoles(payload) {
 export async function querySingleUserRole(payload) {
   return request(`/api/role/querySingleUserRole/`+payload, {
     method: 'GET',
-    body: {
-
-    }
+    body: payload
   });
 }
 

@@ -9,8 +9,7 @@ import request from '../utils/request';
 export async function getUserMenuTree(payload) {
   return request(`/api/menu/getUserMenuTree`, {
     method: 'GET',
-    body: {
-    }
+    body: payload
   });
 }
 
