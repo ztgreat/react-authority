@@ -125,9 +125,9 @@ export const getRouterData = app => {
       component: dynamicWrapper(app, ['admin','role'], () => import('../routes/Admin/AdminList')),
     },
 
-    // '/admin/center': {
-    //   component: dynamicWrapper(app, ['admin'], () => import('../routes/Account/Settings/BaseView')),
-    // },
+    '/account/center': {
+      component: dynamicWrapper(app, ['admin'], () => import('../routes/Account/Settings/Info')),
+    },
 
     '/auth/role/list': {
       component: dynamicWrapper(app, ['role'], () => import('../routes/Role/RoleList')),

@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react';
-import { formatMessage, FormattedMessage } from 'umi/locale';
 import { Form, Input, Upload, Select, Button } from 'antd';
 import { connect } from 'dva';
 import styles from './BaseView.less';
@@ -11,7 +10,7 @@ const { Option } = Select;
 const AvatarView = ({ avatar }) => (
   <Fragment>
     <div className={styles.avatar_title}>
-      <FormattedMessage id="app.settings.basic.avatar" defaultMessage="Avatar" />
+      头像
     </div>
     <div className={styles.avatar}>
       <img src={avatar} alt="avatar" />
@@ -19,7 +18,7 @@ const AvatarView = ({ avatar }) => (
     <Upload fileList={[]}>
       <div className={styles.button_view}>
         <Button icon="upload">
-          <FormattedMessage id="app.settings.basic.change-avatar" defaultMessage="Change avatar" />
+          上传
         </Button>
       </div>
     </Upload>
@@ -65,70 +64,43 @@ class BaseView extends Component {
       <div className={styles.baseView} ref={this.getViewDom}>
         <div className={styles.left}>
           <Form layout="vertical" onSubmit={this.handleSubmit} hideRequiredMark>
-            <FormItem label={formatMessage({ id: 'app.settings.basic.email' })}>
+            <FormItem label={'邮箱'}>
               {getFieldDecorator('email', {
                 rules: [
                   {
                     required: true,
-                    message: formatMessage({ id: 'app.settings.basic.email-message' }, {}),
+                    message: '请输入您的邮箱!',
                   },
                 ],
               })(<Input />)}
             </FormItem>
-            <FormItem label={formatMessage({ id: 'app.settings.basic.nickname' })}>
+            <FormItem label={'昵称'}>
               {getFieldDecorator('name', {
                 rules: [
                   {
                     required: true,
-                    message: formatMessage({ id: 'app.settings.basic.nickname-message' }, {}),
+                    message: '请输入您的昵称!',
                   },
                 ],
               })(<Input />)}
             </FormItem>
-            <FormItem label={formatMessage({ id: 'app.settings.basic.profile' })}>
+            <FormItem label={'个人简介'}>
               {getFieldDecorator('profile', {
                 rules: [
                   {
                     required: true,
-                    message: formatMessage({ id: 'app.settings.basic.profile-message' }, {}),
+                    message: '请输入个人简介!',
                   },
                 ],
               })(
                 <Input.TextArea
-                  placeholder={formatMessage({ id: 'app.settings.basic.profile-placeholder' })}
+                  placeholder='个人简介'
                   rows={4}
                 />
               )}
             </FormItem>
-            <FormItem label={formatMessage({ id: 'app.settings.basic.country' })}>
-              {getFieldDecorator('country', {
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage({ id: 'app.settings.basic.country-message' }, {}),
-                  },
-                ],
-              })(
-                <Select style={{ maxWidth: 220 }}>
-                  <Option value="China">中国</Option>
-                </Select>
-              )}
-            </FormItem>
-            <FormItem label={formatMessage({ id: 'app.settings.basic.address' })}>
-              {getFieldDecorator('address', {
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage({ id: 'app.settings.basic.address-message' }, {}),
-                  },
-                ],
-              })(<Input />)}
-            </FormItem>
             <Button type="primary">
-              <FormattedMessage
-                id="app.settings.basic.update"
-                defaultMessage="Update Information"
-              />
+              更新基本信息
             </Button>
           </Form>
         </div>

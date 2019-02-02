@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import router from 'umi/router';
-import { FormattedMessage } from 'umi/locale';
-import { Menu } from 'antd';
+import {routerRedux } from 'dva/router';
+import { Menu ,Card} from 'antd';
+import PageHeaderLayout from '../../../layouts/PageHeaderLayout';
 import GridContent from '../../../components/PageHeaderWrapper/GridContent';
 import styles from './Info.less';
 
@@ -16,18 +16,15 @@ class Info extends Component {
     super(props);
     const { match, location } = props;
     const menuMap = {
-      base: <FormattedMessage id="app.settings.menuMap.basic" defaultMessage="Basic Settings" />,
+      base:  '基本设置',
       security: (
-        <FormattedMessage id="app.settings.menuMap.security" defaultMessage="Security Settings" />
+        '安全设置'
       ),
       binding: (
-        <FormattedMessage id="app.settings.menuMap.binding" defaultMessage="Account Binding" />
+        '账号绑定'
       ),
       notification: (
-        <FormattedMessage
-          id="app.settings.menuMap.notification"
-          defaultMessage="New Message Notification"
-        />
+        '新消息通知'
       ),
     };
     const key = location.pathname.replace(`${match.path}/`, '');
@@ -68,10 +65,12 @@ class Info extends Component {
   };
 
   selectKey = ({ key }) => {
-    router.push(`/account/settings/${key}`);
     this.setState({
       selectKey: key,
     });
+    const {dispatch} = this.props;
+    console.log(key)
+    dispatch(routerRedux.push({pathname:`/account/settings/${key}`}))
   };
 
   resize = () => {
@@ -95,29 +94,34 @@ class Info extends Component {
 
   render() {
     const { children, currentUser } = this.props;
-    if (!currentUser.userid) {
+    if (!currentUser.id) {
       return '';
     }
+    console.log(this.props)
     const { mode, selectKey } = this.state;
     return (
-      <GridContent>
-        <div
-          className={styles.main}
-          ref={ref => {
-            this.main = ref;
-          }}
-        >
-          <div className={styles.leftmenu}>
-            <Menu mode={mode} selectedKeys={[selectKey]} onClick={this.selectKey}>
-              {this.getmenu()}
-            </Menu>
-          </div>
-          <div className={styles.right}>
-            <div className={styles.title}>{this.getRightTitle()}</div>
-            {children}
-          </div>
-        </div>
-      </GridContent>
+
+      <PageHeaderLayout title="资源权限">
+        <Card bordered={false}>
+            <div
+              className={styles.main}
+              ref={ref => {
+                this.main = ref;
+              }}
+            >
+              <div className={styles.leftmenu}>
+                <Menu mode={mode} selectedKeys={[selectKey]} onClick={this.selectKey}>
+                  {this.getmenu()}
+                </Menu>
+              </div>
+              <div className={styles.right}>
+                <div className={styles.title}>{this.getRightTitle()}</div>
+                {children}
+              </div>
+            </div>
+
+        </Card>
+      </PageHeaderLayout>
     );
   }
 }
